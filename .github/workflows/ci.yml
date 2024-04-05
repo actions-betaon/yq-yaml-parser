@@ -25,7 +25,7 @@ jobs:
           - 5001:5000
 
     env:
-      TEST_TAG: localhost:5001/actions/hello-world-docer-action:latest
+      TEST_TAG: localhost:5001/actions/yq-yaml-parser-action:latest
 
     steps:
       - name: Checkout
@@ -51,9 +51,11 @@ jobs:
         id: run
         env:
           INPUT_WHO_TO_GREET: Mona Lisa Octocat
+          INPUT_YAML_FILE_PATH: ./yq-test.yml
         run: |
           docker run \
             --env INPUT_WHO_TO_GREET="${{ env.INPUT_WHO_TO_GREET }}" \
+            --env INPUT_YAML_FILE_PATH="${{ env.INPUT_YAML_FILE_PATH }}" \
             --rm ${{ env.TEST_TAG }}
 
   test-action:

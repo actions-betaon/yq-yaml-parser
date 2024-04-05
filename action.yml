@@ -20,7 +20,8 @@ outputs:
 runs:
   using: docker
   image: Dockerfile
-  args:
-    - '${{ inputs.file-path }}'
+  #args:
+  #  - '${{ inputs.file-path }}'
   env:
     INPUT_WHO_TO_GREET: ${{ inputs.who-to-greet }}
+    INPUT_YAML_FILE_PATH: '${{ inputs.file-path }}'
