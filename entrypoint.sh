@@ -14,7 +14,7 @@ _replace_dots() {
 set -e
 
 # Read the file using yq
-yq -o p --properties-separator ':' '... comments = ""' "$1"
+yq -o p --properties-separator ':' '... comments = ""' "$INPUT_YAML_FILE_PATH"
 
 _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
 _parsed_properties=$(_replace_dots "$properties" "_")
