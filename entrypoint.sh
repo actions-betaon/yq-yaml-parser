@@ -1,7 +1,7 @@
 #!/bin/sh -l
 
 # Read the file using yq
-yq e '.key' "$1"
+yq e "$1"
 
 # Use INPUT_<INPUT_NAME> to get the value of an input
 GREETING="Hello, $INPUT_WHO_TO_GREET!"

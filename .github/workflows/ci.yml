@@ -70,7 +70,7 @@ jobs:
         uses: ./
         with:
           who-to-greet: Mona Lisa Octocat
-          file-path: yq-test.yml
+          file-path: ./yq-test.yml
 
       - name: Print Output
         id: output
