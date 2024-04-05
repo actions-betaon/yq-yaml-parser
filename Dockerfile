@@ -1,5 +1,5 @@
 # Set the base image to use for subsequent instructions
-FROM mikefarah/yq:4.43.1
+FROM mikefarah/yq:4.43.1-githubaction
 
 # Set the working directory inside the container
 WORKDIR /usr/src

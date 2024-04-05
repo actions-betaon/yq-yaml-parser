@@ -1,5 +1,7 @@
 #!/bin/sh -l
 
+set -e
+
 # Read the file using yq
 yq e "$1"
 
