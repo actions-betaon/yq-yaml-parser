@@ -1,0 +1,6 @@
+app-build:
+  # comment
+  working-dir: './app =' #comment line
+  version: '9.x'
+app-tests:
+  working-dir: './app/tests'

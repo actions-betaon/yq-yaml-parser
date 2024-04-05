@@ -3,7 +3,10 @@ description: Greet someone and record the time
 author: GitHub Actions
 
 # Define your inputs here.
-inputs:
+inputs:  
+  file-path:
+    description: 'Path to the yaml file to read'
+    required: true
   who-to-greet:
     description: Who to greet
     required: true
@@ -17,5 +20,7 @@ outputs:
 runs:
   using: docker
   image: Dockerfile
+  args:
+    - '${{ inputs.file-path }}'
   env:
     INPUT_WHO_TO_GREET: ${{ inputs.who-to-greet }}
