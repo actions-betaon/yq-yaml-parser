@@ -16,7 +16,7 @@ set -e
 # Read the file using yq
 yq -o p --properties-separator ':' '... comments = ""' "$1"
 
-_properties=$(_yaml_to_properties "$YAMLPARSER_FILE_PATH")
+_properties=$(_yaml_to_properties "$1")
 _parsed_properties=$(_replace_dots "$properties" "_")
 
 # Use INPUT_<INPUT_NAME> to get the value of an input
