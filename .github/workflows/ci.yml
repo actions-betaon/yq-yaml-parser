@@ -58,7 +58,7 @@ jobs:
           docker run \
             --workdir /github/workspace \
             --volume "${{ github.workspace }}":"/github/workspace" \
-            --volume "${{ runner.temp }}/_runner_file_commands":"/github/file_commands" \
+            --volume "${{ runner.temp }}/_runner_file_commands":"${{ runner.temp }}/_runner_file_commands" \
             --env GITHUB_OUTPUT="$GITHUB_OUTPUT" \
             --env INPUT_WHO_TO_GREET="${{ env.INPUT_WHO_TO_GREET }}" \
             --env INPUT_YAML_FILE_PATH="${{ env.INPUT_YAML_FILE_PATH }}" \
