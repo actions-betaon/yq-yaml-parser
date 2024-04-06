@@ -13,6 +13,8 @@ _replace_dots() {
 
 set -e
 
+echo $GITHUB_OUTPUT
+
 # Read the file using yq
 yq -o p --properties-separator ':' '... comments = ""' "$INPUT_YAML_FILE_PATH"
 
