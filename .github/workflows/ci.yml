@@ -53,13 +53,13 @@ jobs:
           INPUT_WHO_TO_GREET: Mona Lisa Octocat
           INPUT_YAML_FILE_PATH: ./yq-test.yml
           #GITHUB_OUTPUT: /github/file_commands/output_temp --env GITHUB_OUTPUT="${{ env.GITHUB_OUTPUT }}" \
-        run: |
-          echo "$RUNNER_CONTEXT"
+        run: |          
           echo "$GITHUB_OUTPUT"
           docker run \
             --workdir /github/workspace \
             --volume "${{ github.workspace }}":"/github/workspace" \
-            --volume "${{ runner.temp }}/_runner_file_commands":"/github/file_commands" \            
+            --volume "${{ runner.temp }}/_runner_file_commands":"/github/file_commands" \
+            --env GITHUB_OUTPUT="$GITHUB_OUTPUT" \
             --env INPUT_WHO_TO_GREET="${{ env.INPUT_WHO_TO_GREET }}" \
             --env INPUT_YAML_FILE_PATH="${{ env.INPUT_YAML_FILE_PATH }}" \
             --rm ${{ env.TEST_TAG }}
