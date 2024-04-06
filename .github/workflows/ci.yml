@@ -52,6 +52,7 @@ jobs:
         env:
           INPUT_WHO_TO_GREET: Mona Lisa Octocat
           INPUT_YAML_FILE_PATH: ./yq-test.yml
+          GITHUB_OUTPUT: $GITHUB_OUTPUT
         run: |
           docker run \
             --workdir /github/workspace \
