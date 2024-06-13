@@ -14,7 +14,7 @@ _replace_dots() {
 set -e
 
 _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
-_parsed_properties=$(_replace_dots "$properties" "_")
+_parsed_properties=$(_replace_dots "$_properties" "_")
 
 echo "$_properties"
 echo "$_parsed_properties"
