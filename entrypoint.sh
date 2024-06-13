@@ -16,6 +16,8 @@ set -e
 _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
 _parsed_properties=$(_replace_dots "$properties" "_")
 
+echo "Ola"
+
 # Use workflow commands to do things like set debug messages
 echo "::notice file=entrypoint.sh,line=20::$_parsed_properties"
 
