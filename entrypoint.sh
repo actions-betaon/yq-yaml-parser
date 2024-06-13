@@ -17,7 +17,7 @@ _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
 _parsed_properties=$(_replace_dots "$properties" "_")
 
 # Use workflow commands to do things like set debug messages
-echo "::notice file=entrypoint.sh,_parsed_properties::$_parsed_properties"
+echo "::notice file=entrypoint.sh,line=20::$_parsed_properties"
 
 # Write outputs to the $GITHUB_OUTPUT file
 echo "time=$(date)" >>"$GITHUB_OUTPUT"
