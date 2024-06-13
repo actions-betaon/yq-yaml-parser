@@ -62,6 +62,10 @@ jobs:
             --env INPUT_YAML_FILE_PATH="${{ env.INPUT_YAML_FILE_PATH }}" \
             --rm ${{ env.TEST_TAG }}
 
+      - name: Print Output
+        id: output
+        run: echo "${{ steps.run.outputs.time }}"            
+
   test-action:
     name: GitHub Actions Test
     runs-on: ubuntu-latest
