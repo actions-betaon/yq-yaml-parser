@@ -13,11 +13,6 @@ _replace_dots() {
 
 set -e
 
-echo $GITHUB_OUTPUT
-
-# Read the file using yq
-yq -o p --properties-separator ':' '... comments = ""' "$INPUT_YAML_FILE_PATH"
-
 _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
 _parsed_properties=$(_replace_dots "$properties" "_")
 
@@ -25,7 +20,7 @@ _parsed_properties=$(_replace_dots "$properties" "_")
 GREETING="Hello, $INPUT_WHO_TO_GREET!"
 
 # Use workflow commands to do things like set debug messages
-echo "::notice file=entrypoint.sh,line=7::$GREETING"
+echo "::notice file=entrypoint.sh,line=23::$GREETING"
 
 # Write outputs to the $GITHUB_OUTPUT file
 echo "time=$(date)" >>"$GITHUB_OUTPUT"
