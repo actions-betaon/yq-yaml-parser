@@ -16,6 +16,7 @@ set -e
 _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
 _parsed_properties=$(_replace_dots "$properties" "_")
 
+echo "$GITHUB_OUTPUT"
 echo "$_parsed_properties"
 
 # Use workflow commands to do things like set debug messages
