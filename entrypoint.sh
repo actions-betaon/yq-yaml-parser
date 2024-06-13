@@ -22,6 +22,8 @@ GREETING="Hello, $INPUT_WHO_TO_GREET!"
 # Use workflow commands to do things like set debug messages
 echo "::notice file=entrypoint.sh,line=23::$GREETING"
 
+echo "::notice file=entrypoint.sh,line=23::$GITHUB_OUTPUT"
+
 # Write outputs to the $GITHUB_OUTPUT file
 echo "time=$(date)" >>"$GITHUB_OUTPUT"
 
