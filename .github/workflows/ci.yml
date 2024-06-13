@@ -55,6 +55,7 @@ jobs:
         run: |          
           echo "$GITHUB_OUTPUT"
           docker run \
+            --workdir /github/workspace \          
             --volume "${{ github.workspace }}":/github/workspace \
             --env INPUT_YAML_FILE_PATH="${{ env.INPUT_YAML_FILE_PATH }}" \
             --rm ${{ env.TEST_TAG }}
