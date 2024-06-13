@@ -20,7 +20,7 @@ echo "$_properties"
 echo "$_parsed_properties"
 
 # Use workflow commands to do things like set debug messages
-#echo "::notice file=entrypoint.sh,line=23::$_parsed_properties"
+echo "::notice file=entrypoint.sh,line=23::$_properties"
 
 # Write outputs to the $GITHUB_OUTPUT file
 echo "time=$(date)" >>"$GITHUB_OUTPUT"
