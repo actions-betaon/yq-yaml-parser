@@ -11,6 +11,14 @@ _replace_dots() {
   echo "$string" | awk -v rep="$replacement" 'BEGIN{FS=OFS=":"} {gsub(/\./,rep,$1); print}'
 }
 
+_set_github_output() {
+  local propAndValue="$1"
+  prop="${propAndValue%%=*}"
+  value="${propAndValue#*=}"
+  echo "$prop"
+  echo "$value"
+}
+
 set -e
 
 _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
@@ -22,6 +30,7 @@ echo "$_parsed_properties"
 echo "$_parsed_properties" | while read propAndValue;
 do
   echo "$propAndValue" >>"$GITHUB_OUTPUT"
+  _set_github_output "$propAndValue"
 done
 
 # Use workflow commands to do things like set debug messages
