@@ -82,3 +82,7 @@ jobs:
       - name: Print Output
         id: output
         run: echo "${{ toJson(steps.test-action.outputs) }}"
+
+      - name: Print Multiline Output
+        id: output-multiline
+        run: echo "${{ steps.test-action.outputs.app-build_multiline }}"
