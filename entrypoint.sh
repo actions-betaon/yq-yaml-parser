@@ -12,35 +12,43 @@ _replace_dots() {
 }
 
 _set_github_output() {  
-  local propAndValue="$1"
-  local multilineMark="$2"
+  local prop="$1"
+  local value="$2"
+  local lineBreakMark="$3"
 
-  prop="${propAndValue%%=*}"
-  value="${propAndValue#*=}"
-
-  if echo $value | grep -iq "$multilineMark"; then
-    value_multiline=$(echo "${value//$multilineMark/$'\n'}")
+  if echo $value | grep -iq "$lineBreakMark"; then
+    value_multiline=$(echo "${value//$lineBreakMark/$'\n'}")
     {
       echo "$prop<<EOF"
       echo "$value_multiline"
       echo EOF
     } >> "$GITHUB_OUTPUT"
   else
-    echo "$propAndValue" >>"$GITHUB_OUTPUT"
+    echo "$prop=$value" >>"$GITHUB_OUTPUT"
   fi
+}
+
+_set_github_outputs() {  
+  local parsedProperties="$1"
+  local lineBreakMark="$2"
+
+  echo "$parsedProperties" | while read -r propAndValue;
+  do
+     prop="${propAndValue%%=*}"
+     value="${propAndValue#*=}"
+    _set_github_output "$prop" "$value" "$lineBreakMark"
+  done
 }
 
 set -e
 
-_multilineMark="#EOL#"
+_lineBreakMark="#EOL#"
+
 _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
-_escaped_multiline_properties=$(echo "${_properties//\\n/$_multilineMark}")
+_escaped_multiline_properties=$(echo "${_properties//\\n/$_lineBreakMark}")
 _parsed_properties=$(_replace_dots "$_escaped_multiline_properties" "_")
 
-echo "$_parsed_properties" | while read -r propAndValue;
-do   
-   _set_github_output "$propAndValue" "$_multilineMark"
-done
+_set_github_outputs "$_parsed_properties" "$_lineBreakMark"
 
 # Use workflow commands to do things like set debug messages
 #echo "::notice file=entrypoint.sh,line=30::$_properties"
