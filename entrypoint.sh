@@ -17,6 +17,9 @@ _set_github_output() {
   value="${propAndValue#*=}"
   echo "$prop"
   echo "$value"
+  if [[ $value == *"\\n"* ]]; then
+    echo "Escaped $prop - $value!"
+  fi
 }
 
 set -e
