@@ -13,11 +13,13 @@ _replace_dots() {
 
 _set_github_output() {
   local propAndValue="$1"
+  propAndValueUnescaped="$(printf '%b\n' "$propAndValue")"
   prop="${propAndValue%%=*}"
   value="${propAndValue#*=}"
+  echo "$prop - $value"
   #echo "${propAndValue}"
   #echo "$(printf '%b\n' "$propAndValue")"
-  echo "$(printf '%b\n' "$value")"
+  #echo "$(printf '%b\n' "$value")"
   if echo $value | grep -iq "\\n"; then
     value_multiline=$(echo "${value//#EOL#/$'\n'}")
     {
