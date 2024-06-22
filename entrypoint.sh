@@ -15,7 +15,7 @@ _set_github_output() {
   local propAndValue="$1"
   prop="${propAndValue%%=*}"
   value="${propAndValue#*=}"
-  echo "${value//#EOL#/$'\n'}"
+  echo "${value//#EOL#/\\n}"
   if echo $value | grep -iq "#EOL#"; then
     value_multiline=$(echo "${value//#EOL#/$'\n'}")
     {
