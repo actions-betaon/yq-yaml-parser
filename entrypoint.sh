@@ -14,7 +14,9 @@ _replace_dots() {
 _set_github_output() {
   local propAndValue="$1"
   prop="${propAndValue%%=*}"
-  value="${propAndValue#*=}"  
+  value="${propAndValue#*=}"
+  echo "$propAndValue"
+  echo $propAndValue
   if echo $value | grep -iq "#EOL#"; then
     {
       echo "$prop<<EOF"
@@ -32,11 +34,6 @@ set -e
 _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
 _parsed_properties=$(_replace_dots "$_properties" "_")
 _escaped_multiline_properties=$(echo "${_parsed_properties//\\n/#EOL#}")
-
-#echo "$_properties"
-echo "$_parsed_properties"
-echo ""
-echo "${_parsed_properties//\\n/#EOL#}"
 
 echo "$_escaped_multiline_properties" | while read -r propAndValue;
 do
