@@ -48,6 +48,8 @@ _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
 _escaped_multiline_properties=$(echo "${_properties//\\n/$_lineBreakMark}")
 _parsed_properties=$(_replace_dots "$_escaped_multiline_properties" "_")
 
+echo "Parsed properties: $_parsed_properties"
+
 _set_github_outputs "$_parsed_properties" "$_lineBreakMark"
 
 # Use workflow commands to do things like set debug messages
