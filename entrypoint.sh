@@ -15,16 +15,15 @@ _set_github_output() {
   local propAndValue="$1"
   prop="${propAndValue%%=*}"
   value="${propAndValue#*=}"
-  echo "$propAndValue"
-  echo $propAndValue
+  echo "${value//#EOL#/$'\n'}"
   if echo $value | grep -iq "#EOL#"; then
+    value_multiline=$(echo "${value//#EOL#/$'\n'}")
     {
       echo "$prop<<EOF"
-      echo "${value//#EOL#/$'\n'}"
+      echo "$value_multiline"
       echo EOF
     } >> "$GITHUB_OUTPUT"
   else
-    #echo "$propAndValue" >>"$GITHUB_OUTPUT"
     echo ""
   fi
 }
@@ -34,6 +33,7 @@ set -e
 _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
 _parsed_properties=$(_replace_dots "$_properties" "_")
 _escaped_multiline_properties=$(echo "${_parsed_properties//\\n/#EOL#}")
+
 
 echo "$_escaped_multiline_properties" | while read -r propAndValue;
 do
