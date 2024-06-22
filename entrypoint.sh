@@ -44,7 +44,7 @@ _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
 #_escaped_multiline_properties=$(echo "${_parsed_properties//\\n/#EOL#}")
 
 #echo "$(printf '%b\n' "$_properties")"
-echo "$_properties"
+echo -e "$_properties"
 
 echo $_parsed_properties | while read -r propAndValue;
 do
