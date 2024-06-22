@@ -17,10 +17,10 @@ _set_github_output() {
   value="${propAndValue#*=}"
   echo "$value"
   echo "${value//\\n/$'\n'}"
-  if echo "$value" | grep -q "\\n"; then
+  if echo $value | grep -q "\\n"; then
     {
       echo "$prop<<EOF"
-      echo "${value//\\n/$'\n'}"
+      echo "${value//\\n//$'\n'}"
       echo EOF
     } >> "$GITHUB_OUTPUT"
   else
