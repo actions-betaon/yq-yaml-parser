@@ -1,11 +1,11 @@
 app-build:
   # comment
   working-dir: ./app = #comment line
-  version: 9.x
+  version: '9.x'
   multiline: |
     ### Heading
 
-    * Bullet
+    * Bullet C:\ 
     * Points
 app-tests:
   working-dir: ./app/tests
