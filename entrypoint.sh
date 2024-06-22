@@ -36,6 +36,8 @@ _parsed_properties=$(_replace_dots "$_properties" "_")
 
 #echo "$_properties"
 echo "$_parsed_properties"
+echo ""
+echo "${_parsed_properties//\\n/#EOL#}"
 
 echo "$_parsed_properties" | while read -r propAndValue;
 do
