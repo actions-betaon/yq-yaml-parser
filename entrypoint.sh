@@ -23,7 +23,8 @@ _set_github_output() {
       echo EOF
     } >> "$GITHUB_OUTPUT"
   else
-    echo "$propAndValue" >>"$GITHUB_OUTPUT"
+    #echo "$propAndValue" >>"$GITHUB_OUTPUT"
+    echo "N\A"
   fi
 }
 
