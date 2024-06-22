@@ -15,10 +15,15 @@ _set_github_output() {
   local propAndValue="$1"
   prop="${propAndValue%%=*}"
   value="${propAndValue#*=}"
-  echo "$prop"
-  echo "$value"
+  #echo "$prop"
   if [[ $value == *"\\n"* ]]; then
-    echo "Escaped $prop - $value!"
+    {
+      echo '$prop<<EOF'
+      echo "$value"
+      echo EOF
+    } >> "$GITHUB_OUTPUT"
+  else
+    echo "$propAndValue" >>"$GITHUB_OUTPUT"
   fi
 }
 
@@ -28,16 +33,16 @@ _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
 _parsed_properties=$(_replace_dots "$_properties" "_")
 
 #echo "$_properties"
-echo "$_parsed_properties"
+#echo "$_parsed_properties"
 
-echo "$_parsed_properties" | while read propAndValue;
+echo "$_parsed_properties" | while read -r propAndValue;
 do
-  echo "$propAndValue" >>"$GITHUB_OUTPUT"
+  #echo "$propAndValue" >>"$GITHUB_OUTPUT"
   _set_github_output "$propAndValue"
 done
 
 # Use workflow commands to do things like set debug messages
-echo "::notice file=entrypoint.sh,line=30::$_properties"
+#echo "::notice file=entrypoint.sh,line=30::$_properties"
 
 # Write outputs to the $GITHUB_OUTPUT file
 echo "time=$(date)" >>"$GITHUB_OUTPUT"
