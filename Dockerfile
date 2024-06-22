@@ -6,6 +6,7 @@ FROM mikefarah/yq:4.43.1
 
 # Copy any source file(s) required for the action
 COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 USER root
 
