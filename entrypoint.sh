@@ -12,20 +12,21 @@ _replace_dots() {
 }
 
 _set_github_output() {
-  local propAndValue="$(printf '%b\n' "$1")"
+  #local propAndValue="$(printf '%b\n' "$1")"
+  local propAndValue="$1"
 
   echo "$propAndValue"
 
   #propAndValueUnescaped="$(printf '%b\n' "$propAndValue")"
-  #prop="${propAndValue%%=*}"
-  #value="${propAndValue#*=}"
+  prop="${propAndValue%%=*}"
+  value="${propAndValue#*=}"
   #value="${propAndValueUnescaped//$prop/""}"
   #echo "$propAndValue"
   #echo "$prop"
   #echo "${propAndValue}"
   #echo "$(printf '%b\n' "$propAndValue")"
   #echo "$(printf '%b\n' "$value")"
-  if echo $value | grep -iq "\\n"; then
+  if echo $value | grep -iq "#EOL#"; then
     value_multiline=$(echo "${value//#EOL#/$'\n'}")
     {
       echo "$prop<<EOF"
@@ -50,11 +51,11 @@ echo "$_parsed_properties"
 #echo "$(printf '%b\n' "$_properties")"
 #echo -e "$_properties_print"
 
-# echo $_parsed_properties | while read -r propAndValue;
-# do
-#   #echo "$propAndValue" >>"$GITHUB_OUTPUT"
-#   _set_github_output "$propAndValue"
-# done
+echo "$_parsed_properties" | while read -r propAndValue;
+do
+   #echo "$propAndValue" >>"$GITHUB_OUTPUT"
+   _set_github_output "$propAndValue"
+done
 
 # Use workflow commands to do things like set debug messages
 #echo "::notice file=entrypoint.sh,line=30::$_properties"
