@@ -12,12 +12,12 @@ _replace_dots() {
 }
 
 _set_github_output() {
-  local propAndValue="$1"
+  local propAndValue="$(printf '%b\n' "$1")"
   propAndValueUnescaped="$(printf '%b\n' "$propAndValue")"
   prop="${propAndValue%%=*}="
   #value="${propAndValueUnescaped//$prop/""}"
-  echo -e "$propAndValueUnescaped"
-  echo -e "$propAndValueUnescaped"
+  echo "$propAndValueUnescaped"
+  echo "$propAndValueUnescaped"
   #echo "${propAndValue}"
   #echo "$(printf '%b\n' "$propAndValue")"
   #echo "$(printf '%b\n' "$value")"
