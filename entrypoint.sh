@@ -16,7 +16,7 @@ _set_github_output() {
   prop="${propAndValue%%=*}"
   value="${propAndValue#*=}"
   #echo "$prop"
-  if [[ $value == *"\\n"* ]]; then
+  if echo "$value" | grep -q "\\n"; then
     {
       echo '$prop<<EOF'
       echo "$value"
