@@ -1,4 +1,4 @@
-#!/bin/sh -l
+#!/bin/bash -l
 
 _yaml_to_properties() {
   local yaml_file="$1"
