@@ -14,7 +14,7 @@ _replace_dots() {
 _set_github_output() {
   local propAndValue="$(printf '%b\n' "$1")"
 
-  echo "$propAndValue"
+  #echo "$propAndValue"
 
   #propAndValueUnescaped="$(printf '%b\n' "$propAndValue")"
   #prop="${propAndValue%%=*}"
@@ -45,7 +45,7 @@ _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
 #_escaped_multiline_properties=$(echo "${_parsed_properties//\\n/#EOL#}")
 
 #properties_ec=$(echo "$(printf '%b\n' "$_properties")")
-echo "$(printf '%b\n' $_properties)"
+echo "$(printf '%b\n' "$_properties")"
 #echo -e "$_properties_print"
 
 # echo $_parsed_properties | while read -r propAndValue;
