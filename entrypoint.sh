@@ -46,6 +46,7 @@ _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
 
 #properties_ec=$(echo "$(printf '%b\n' "$_properties")")
 echo "$(printf '%b\n' "$_properties")"
+echo "$(printf '%b\n' "$_properties")"
 #echo -e "$_properties_print"
 
 # echo $_parsed_properties | while read -r propAndValue;
