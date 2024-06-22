@@ -8,7 +8,7 @@ _yaml_to_properties() {
 _replace_dots() {
   local string="$1"
   local replacement="$2"
-  printf '%b\n' "$string" | awk -v rep="$replacement" 'BEGIN{FS=OFS=":"} {gsub(/\./,rep,$1); print}'
+  echo "$string" | awk -v rep="$replacement" 'BEGIN{FS=OFS=":"} {gsub(/\./,rep,$1); print}'
 }
 
 _set_github_output() {
@@ -41,11 +41,11 @@ set -e
 
 _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
 #_properties_print="$(printf '%b\n' "$_properties")"
-_parsed_properties=$(_replace_dots "$_properties" "_")
+#_parsed_properties=$(_replace_dots "$_properties" "_")
 #_escaped_multiline_properties=$(echo "${_parsed_properties//\\n/#EOL#}")
 
 #properties_ec=$(echo "$(printf '%b\n' "$_properties")")
-echo "$(printf '%b\n' "$_parsed_properties")"
+echo "$_properties"
 #echo "$(printf '%b\n' "$_properties")"
 #echo -e "$_properties_print"
 
