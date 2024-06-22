@@ -16,6 +16,7 @@ _set_github_output() {
   propAndValueUnescaped="$(printf '%b\n' "$propAndValue")"
   prop="${propAndValue%%=*}"
   value="${propAndValue#*=}"
+  echo "$propAndValueUnescaped"
   echo "$prop - $value"
   #echo "${propAndValue}"
   #echo "$(printf '%b\n' "$propAndValue")"
