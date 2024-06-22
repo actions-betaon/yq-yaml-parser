@@ -19,9 +19,9 @@ _parsed_properties=$(_replace_dots "$_properties" "_")
 echo "$_properties"
 echo "$_parsed_properties"
 
-mapfile -t arr <<< "$_parsed_properties"
+read -r -a array <<< "$_parsed_properties"
 
-for propAndValue in "${arr[@]}"
+for propAndValue in "${array[@]}"
 do
   echo "$(propAndValue)" >>"$GITHUB_OUTPUT"
 done
