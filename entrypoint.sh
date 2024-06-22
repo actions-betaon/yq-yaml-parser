@@ -2,7 +2,7 @@
 
 _yaml_to_properties() {
   local yaml_file="$1"
-  yq -o p --properties-separator ':' '... comments = ""' "$yaml_file"
+  yq -o p --properties-separator '=' '... comments = ""' "$yaml_file"
 }
 
 _replace_dots() {
@@ -19,8 +19,15 @@ _parsed_properties=$(_replace_dots "$_properties" "_")
 echo "$_properties"
 echo "$_parsed_properties"
 
+mapfile -t arr <<< "$_parsed_properties"
+
+for propAndValue in "${arr[@]}"
+do
+  echo "$(propAndValue)" >>"$GITHUB_OUTPUT"
+done
+
 # Use workflow commands to do things like set debug messages
-echo "::notice file=entrypoint.sh,line=23::$_properties"
+echo "::notice file=entrypoint.sh,line=30::$_properties"
 
 # Write outputs to the $GITHUB_OUTPUT file
 echo "time=$(date)" >>"$GITHUB_OUTPUT"
