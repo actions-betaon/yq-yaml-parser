@@ -15,8 +15,9 @@ _set_github_output() {
   local propAndValue="$1"
   prop="${propAndValue%%=*}"
   value="${propAndValue#*=}"
-  echo "${value//#EOL#/\\n}"
-  if echo $value | grep -iq "#EOL#"; then
+  #echo "${value//#EOL#/\\n}"
+  echo "$(printf '%b\n' "$value")"
+  if echo $value | grep -iq "\\n"; then
     value_multiline=$(echo "${value//#EOL#/$'\n'}")
     {
       echo "$prop<<EOF"
@@ -35,7 +36,7 @@ _parsed_properties=$(_replace_dots "$_properties" "_")
 _escaped_multiline_properties=$(echo "${_parsed_properties//\\n/#EOL#}")
 
 
-echo "$_escaped_multiline_properties" | while read -r propAndValue;
+echo "$_parsed_properties" | while read -r propAndValue;
 do
   #echo "$propAndValue" >>"$GITHUB_OUTPUT"
   _set_github_output "$propAndValue"
