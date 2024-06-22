@@ -15,14 +15,12 @@ _set_github_output() {
   local prop="$1"
   local value="$2"
   local lineBreakMark="$3"
-  
-  valueWithouLF=$(echo "${_properties//\\n/""}")
 
-  if [ "$value" != "$valueWithouLF" ]; then
+  if echo $value | grep -iq "$lineBreakMark"; then
     value_multiline=$(echo "${value//$lineBreakMark/$'\n'}")
     {
       echo "$prop<<EOF"
-      echo "$value"
+      echo "$value_multiline"
       echo EOF
     } >> "$GITHUB_OUTPUT"
   else
@@ -47,8 +45,8 @@ set -e
 _lineBreakMark="#LF#"
 
 _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
-#_escaped_multiline_properties=$(echo "${_properties//\\n/$_lineBreakMark}")
-_parsed_properties=$(_replace_dots "$_properties" "_")
+_escaped_multiline_properties=$(echo "${_properties//\\n/$_lineBreakMark}")
+_parsed_properties=$(_replace_dots "$_escaped_multiline_properties" "_")
 
 echo "Parsed properties: $_parsed_properties"
 
