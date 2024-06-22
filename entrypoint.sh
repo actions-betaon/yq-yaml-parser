@@ -1,4 +1,4 @@
-#!/bin/sh -l
+#!/bin/bash
 
 _yaml_to_properties() {
   local yaml_file="$1"
@@ -45,7 +45,7 @@ _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
 #_escaped_multiline_properties=$(echo "${_parsed_properties//\\n/#EOL#}")
 
 #properties_ec=$(echo "$(printf '%b\n' "$_properties")")
-echo -e $_properties
+echo "$_properties"
 #echo "$(printf '%b\n' "$_properties")"
 #echo -e "$_properties_print"
 
