@@ -1,6 +1,11 @@
 app-build:
   # comment
-  working-dir: './app =' #comment line
-  version: '9.x'
+  working-dir: ./app = #comment line
+  version: 9.x
+  multiline: |
+    ### Heading
+
+    * Bullet
+    * Points
 app-tests:
-  working-dir: './app/tests'
+  working-dir: ./app/tests
