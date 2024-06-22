@@ -17,7 +17,7 @@ _set_github_output() {
   local lineBreakMark="$3"
 
   if echo $value | grep -iq "$lineBreakMark"; then
-    value_multiline=$(echo "${value//$lineBreakMark/\\n}")
+    value_multiline=$(echo "${value//$lineBreakMark/$'\n'}")
     {
       echo "$prop<<EOF"
       echo "$value_multiline"
