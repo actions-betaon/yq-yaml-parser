@@ -43,9 +43,9 @@ _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
 _parsed_properties=$(_replace_dots "$_properties" "_")
 #_escaped_multiline_properties=$(echo "${_parsed_properties//\\n/#EOL#}")
 
-#echo "$(printf '%b\n' "$_parsed_properties")"
+echo "$(printf '%b\n' "$_parsed_properties")"
 
-echo "$_parsed_properties" | while read -r propAndValue;
+echo $_parsed_properties | while read -r propAndValue;
 do
   #echo "$propAndValue" >>"$GITHUB_OUTPUT"
   _set_github_output "$propAndValue"
