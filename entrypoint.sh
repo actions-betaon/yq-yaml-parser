@@ -15,6 +15,7 @@ _set_github_output() {
   local propAndValue="$1"
   prop="${propAndValue%%=*}"
   value="${propAndValue#*=}"
+  echo "$value"
   echo "${value//\\n/$'\n'}"
   if echo "$value" | grep -q "\\n"; then
     {
@@ -24,7 +25,7 @@ _set_github_output() {
     } >> "$GITHUB_OUTPUT"
   else
     #echo "$propAndValue" >>"$GITHUB_OUTPUT"
-    echo "N\A"
+    echo ""
   fi
 }
 
@@ -34,7 +35,7 @@ _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
 _parsed_properties=$(_replace_dots "$_properties" "_")
 
 #echo "$_properties"
-#echo "$_parsed_properties"
+echo "$_parsed_properties"
 
 echo "$_parsed_properties" | while read -r propAndValue;
 do
