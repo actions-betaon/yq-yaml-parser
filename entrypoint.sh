@@ -48,11 +48,11 @@ _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
 echo "$(printf '%b\n' "$_properties")"
 #echo -e "$_properties_print"
 
-echo $_parsed_properties | while read -r propAndValue;
-do
-  #echo "$propAndValue" >>"$GITHUB_OUTPUT"
-  _set_github_output "$propAndValue"
-done
+# echo $_parsed_properties | while read -r propAndValue;
+# do
+#   #echo "$propAndValue" >>"$GITHUB_OUTPUT"
+#   _set_github_output "$propAndValue"
+# done
 
 # Use workflow commands to do things like set debug messages
 #echo "::notice file=entrypoint.sh,line=30::$_properties"
