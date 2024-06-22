@@ -45,7 +45,7 @@ _properties_print=$(printf '%b\n' "$_properties")
 #_escaped_multiline_properties=$(echo "${_parsed_properties//\\n/#EOL#}")
 
 properties_ec=$(echo "$(printf '%b\n' "$_properties")")
-echo $properties_ec
+echo "$properties_ec"
 #echo -e "$_properties_print"
 
 echo $_parsed_properties | while read -r propAndValue;
