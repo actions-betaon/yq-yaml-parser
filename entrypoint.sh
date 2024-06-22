@@ -18,8 +18,8 @@ _set_github_output() {
   #echo "$prop"
   if echo "$value" | grep -q "\\n"; then
     {
-      echo '$prop<<EOF'
-      echo "$value"
+      echo "$prop<<EOF"
+      echo  "${value//\\n/$'\n'}"
       echo EOF
     } >> "$GITHUB_OUTPUT"
   else
