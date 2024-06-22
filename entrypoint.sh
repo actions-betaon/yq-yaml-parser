@@ -11,50 +11,35 @@ _replace_dots() {
   echo "$string" | awk -v rep="$replacement" 'BEGIN{FS=OFS=":"} {gsub(/\./,rep,$1); print}'
 }
 
-_set_github_output() {
-  #local propAndValue="$(printf '%b\n' "$1")"
+_set_github_output() {  
   local propAndValue="$1"
+  local multilineMark="$2"
 
-  echo "$propAndValue"
-
-  #propAndValueUnescaped="$(printf '%b\n' "$propAndValue")"
   prop="${propAndValue%%=*}"
   value="${propAndValue#*=}"
-  #value="${propAndValueUnescaped//$prop/""}"
-  #echo "$propAndValue"
-  #echo "$prop"
-  #echo "${propAndValue}"
-  #echo "$(printf '%b\n' "$propAndValue")"
-  #echo "$(printf '%b\n' "$value")"
-  if echo $value | grep -iq "#EOL#"; then
-    value_multiline=$(echo "${value//#EOL#/$'\n'}")
+
+  if echo $value | grep -iq "$multilineMark"; then
+    value_multiline=$(echo "${value//$multilineMark/$'\n'}")
     {
       echo "$prop<<EOF"
       echo "$value_multiline"
       echo EOF
     } >> "$GITHUB_OUTPUT"
   else
-    echo ""
+    echo "$propAndValue" >>"$GITHUB_OUTPUT"
   fi
 }
 
 set -e
 
+_multilineMark="#EOL#"
 _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
-_escaped_multiline_properties=$(echo "${_properties//\\n/#EOL#}")
-#_properties_print="$(printf '%b\n' "$_properties")"
+_escaped_multiline_properties=$(echo "${_properties//\\n/$_multilineMark}")
 _parsed_properties=$(_replace_dots "$_escaped_multiline_properties" "_")
-#_escaped_multiline_properties=$(echo "${_parsed_properties//\\n/#EOL#}")
-
-#properties_ec=$(echo "$(printf '%b\n' "$_properties")")
-echo "$_parsed_properties"
-#echo "$(printf '%b\n' "$_properties")"
-#echo -e "$_properties_print"
 
 echo "$_parsed_properties" | while read -r propAndValue;
-do
-   #echo "$propAndValue" >>"$GITHUB_OUTPUT"
-   _set_github_output "$propAndValue"
+do   
+   _set_github_output "$propAndValue" "$_multilineMark"
 done
 
 # Use workflow commands to do things like set debug messages
