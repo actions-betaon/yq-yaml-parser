@@ -40,7 +40,7 @@ _set_github_output() {
 set -e
 
 _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
-_properties_print=$(printf '%b\n' "$_properties")
+_properties_print="$(printf '%b\n' "$_properties")"
 #_parsed_properties=$(_replace_dots "$_properties" "_")
 #_escaped_multiline_properties=$(echo "${_parsed_properties//\\n/#EOL#}")
 
