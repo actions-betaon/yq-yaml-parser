@@ -1,4 +1,4 @@
-#!/bin/sh -l
+#!/bin/bash
 
 _yaml_to_properties() {
   local yaml_file="$1"
@@ -24,7 +24,7 @@ read -r -a arr <<< "$_parsed_properties"
 for propAndValue in "${arr[@]}"
 do
   echo "$(propAndValue)" >>"$GITHUB_OUTPUT"
-done
+done < 
 
 # Use workflow commands to do things like set debug messages
 echo "::notice file=entrypoint.sh,line=30::$_properties"
