@@ -49,7 +49,7 @@ set -e
 _lineBreakMark="#LF#"
 
 _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
-_escaped_multiline_properties=$(echo "${_properties//\\n/$_lineBreakMark}")
+_escaped_multiline_properties=$(echo "${_properties//'\n'/$_lineBreakMark}")
 #_parsed_properties=$(_replace_dots "$_properties" "_")
 
 echo "Parsed properties: $_properties"
