@@ -38,6 +38,7 @@ _set_github_outputs() {
 
   echo "$parsedProperties" | while read -r propAndValue;
   do
+     echo $propAndValue
      prop="${propAndValue%%=*}"
      value="${propAndValue#*=}"
     _set_github_output "$prop" "$value" "$lineBreakMark"
