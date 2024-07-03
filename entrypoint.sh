@@ -18,7 +18,7 @@ _set_github_output() {
   local value="$2"
   local lineBreakMark="$3"
   
-  valueWithouLF=$(echo "${_properties//\\n/""}")
+  valueWithouLF=$(echo "${value//\\n/""}")
 
   if [ "$value" != "$valueWithouLF" ]; then
     value_multiline=$(echo "${value//$lineBreakMark/$'\n'}")
