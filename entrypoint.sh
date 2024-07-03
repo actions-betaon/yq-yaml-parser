@@ -19,12 +19,13 @@ _set_github_output() {
   local lineBreakMark="$3"
   
   valueWithouLF=$(echo "${value//\\n/""}")
+  valuePrint=$(echo "${value//\\n/"##LF##"}")
 
   #if [ "$value" != "$valueWithouLF" ]; then
   #  value_multiline=$(echo "${value//$lineBreakMark/$'\n'}")
     {
       echo "$prop<<EOF"
-      echo "${value//\\n/$'#LF#'}"
+      echo "$valuePrint"
       echo EOF
     } >> "$GITHUB_OUTPUT"
   #else
