@@ -20,16 +20,16 @@ _set_github_output() {
   
   valueWithouLF=$(echo "${value//\\n/""}")
 
-  if [ "$value" != "$valueWithouLF" ]; then
-    value_multiline=$(echo "${value//$lineBreakMark/$'\n'}")
+  #if [ "$value" != "$valueWithouLF" ]; then
+  #  value_multiline=$(echo "${value//$lineBreakMark/$'\n'}")
     {
       echo "$prop<<EOF"
       echo "$value"
       echo EOF
     } >> "$GITHUB_OUTPUT"
-  else
-    echo "$prop=$value" >>"$GITHUB_OUTPUT"
-  fi
+  #else
+  #  echo "$prop=$value" >>"$GITHUB_OUTPUT"
+  #fi
 }
 
 _set_github_outputs() {  
