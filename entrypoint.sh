@@ -8,7 +8,7 @@ _yaml_to_properties() {
 _replace_dots() {
   local string="$1"
   local replacement="$2"
-  echo "$$string" | sed -E 's/\.([^=]*=)/_\1/g'
+  echo "$string" | sed -E 's/\.([^=]*=)/_\1/g'
 
   #echo "$string" | awk -v rep="$replacement" 'BEGIN{FS=OFS=":"} {gsub(/\./,rep,$1); print}'
 }
