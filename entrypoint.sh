@@ -24,7 +24,7 @@ _set_github_output() {
   #  value_multiline=$(echo "${value//$lineBreakMark/$'\n'}")
     {
       echo "$prop<<EOF"
-      echo "$value"
+      echo "${value//\\n/$'#LF#'}"
       echo EOF
     } >> "$GITHUB_OUTPUT"
   #else
