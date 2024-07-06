@@ -8,7 +8,7 @@ _yaml_to_properties() {
 _replace_dots() {
   local string="$1"
   local replacement="$2"
-  echo "${string//"."/$replacement}"
+  echo "${string//./$replacement}"
 }
 
 _set_github_output() {  
@@ -18,15 +18,15 @@ _set_github_output() {
 
   prop=$(_replace_dots "$propDotted" "$propDotReplacement")
   
-  valueWithoutLF=$(echo "${value//\\n/""}")  
+  valueWithoutLF=$(echo "${value//\\n/}")  
   if [ "$value" != "$valueWithoutLF" ]; then    
     {
       echo "$prop<<EOF"
       echo -e "$value"
-      echo EOF
+      echo "EOF"
     } >> "$GITHUB_OUTPUT"
   else
-    echo "$prop=$value" >>"$GITHUB_OUTPUT"
+    echo "$prop=$value" >> "$GITHUB_OUTPUT"
   fi
 }
 
