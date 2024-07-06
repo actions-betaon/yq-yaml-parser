@@ -8,42 +8,37 @@ _yaml_to_properties() {
 _replace_dots() {
   local string="$1"
   local replacement="$2"
-  echo "$string" | sed -E 's/([^=]*)\./\1_/'
-
-  #echo "$string" | awk -v rep="$replacement" 'BEGIN{FS=OFS=":"} {gsub(/\./,rep,$1); print}'
+  echo "${string//"."/$replacement}"
 }
 
 _set_github_output() {  
-  local prop="$1"
+  local propDotted="$1"
   local value="$2"
-  local lineBreakMark="$3"
-  
-  valueWithouLF=$(echo "${value//\\n/""}")
-  valuePrint=$(echo "${value//\\n/"#LF#"}")
-  valueML=$(echo "${value//"#LF#"/$'\n'}")
+  local propDotReplacement="$3"  
 
-  #if [ "$value" != "$valueWithouLF" ]; then
-  #  value_multiline=$(echo "${value//$lineBreakMark/$'\n'}")
+  prop=$(_replace_dots "$propDotted" "$propDotReplacement")
+  
+  valueWithoutLF=$(echo "${value//\\n/""}")  
+  if [ "$value" != "$valueWithoutLF" ]; then    
     {
       echo "$prop<<EOF"
-      echo "$valueML"
+      echo -e "$value"
       echo EOF
     } >> "$GITHUB_OUTPUT"
-  #else
-  #  echo "$prop=$value" >>"$GITHUB_OUTPUT"
-  #fi
+  else
+    echo "$prop=$value" >>"$GITHUB_OUTPUT"
+  fi
 }
 
 _set_github_outputs() {  
   local parsedProperties="$1"
-  local lineBreakMark="$2"
+  local propDotReplacement="$2"  
 
   echo "$parsedProperties" | while read -r propAndValue;
   do
-     echo $propAndValue
      prop="${propAndValue%%=*}"
      value="${propAndValue#*=}"
-    _set_github_output "$prop" "$value" "$lineBreakMark"
+    _set_github_output "$prop" "$value" "$propDotReplacement"
   done
 }
 
@@ -52,16 +47,11 @@ set -e
 _lineBreakMark="#LF#"
 
 _properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
-#_escaped_multiline_properties=$(echo "${_properties//'\n'/\\n}")
-_parsed_properties=$(_replace_dots "$_properties" "_")
 
-echo "Parsed properties: $_parsed_properties"
-#echo "Escaped properties: $_parsed_properties"
-
-_set_github_outputs "$_parsed_properties" "$_lineBreakMark"
+_set_github_outputs "$_properties" "_"
 
 # Use workflow commands to do things like set debug messages
-#echo "::notice file=entrypoint.sh,line=30::$_properties"
+#echo "::notice file=entrypoint.sh,line=59::$_properties"
 
 # Write outputs to the $GITHUB_OUTPUT file
 echo "time=$(date)" >>"$GITHUB_OUTPUT"
