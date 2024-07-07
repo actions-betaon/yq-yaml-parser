@@ -9,7 +9,5 @@ COPY entrypoint.sh /entrypoint.sh
 
 USER root
 
-RUN apk add --no-cache bash
-
 # Configure the container to be run as an executable
-ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]

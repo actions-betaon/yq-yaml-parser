@@ -1,4 +1,4 @@
-#!/bin/bash -l
+#!/bin/sh -l
 
 _yaml_to_properties() {
   local yaml_file="$1"
@@ -9,6 +9,12 @@ _replace_dots() {
   local string="$1"
   local replacement="$2"
   echo "${string//./$replacement}"
+}
+
+_escape_backslashes() {
+  local inputString="$1"  
+  local escapedString=$(echo "$inputString" | sed 's/\\\\n/\\\\\\\\n/g')
+  echo "$escapedString"
 }
 
 _set_github_output() {
@@ -33,7 +39,7 @@ _set_github_outputs() {
 
   echo "$properties" | while read -r propertyLine;
   do
-     echo "${propertyLine}"
+     echo $(_escape_backslashes "$propertyLine")"
      propertyName=$(_replace_dots "${propertyLine%%=*}" "$propertyNameDotReplace")
      propertyValue="${propertyLine#*=}"
     _set_github_output "$propertyName" "$propertyValue"
