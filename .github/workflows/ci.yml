@@ -99,6 +99,7 @@ jobs:
           else
             echo "Test Multiline Output - Failed"
             echo "### :x: Test Multiline Output - Failed" >> $GITHUB_STEP_SUMMARY
-            echo "The command output does not match the expected result." >> $GITHUB_STEP_SUMMARY
+            printf "Expected Result:\n%s" "$expected_result" >> $GITHUB_STEP_SUMMARY
+            printf "Command Output:\n%s" "$command_output" >> $GITHUB_STEP_SUMMARY             
             exit 1
           fi
