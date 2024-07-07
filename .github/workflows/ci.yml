@@ -87,19 +87,18 @@ jobs:
         id: test-output-multiline
         run: |
           expected_result=$'### Heading\n\n* Bullet C:\\ \n* Points\n'
-          command_output="${{ steps.test-action.outputs.app-build_multiline }}"
+          output_result="${{ steps.test-action.outputs.app-build_multiline }}"
 
           printf "Expected Result:\n%s" "$expected_result"
-          printf "Command Output:\n%s" "$command_output"          
+          printf "Output Result:\n%s" "$output_result"          
 
-          if [[ "$command_output" == "$expected_result" ]]; then
+          if [[ "$output_result" == "$expected_result" ]]; then
             echo "Test Multiline Output - Success"
-            echo "### :white_check_mark: Test Multiline Output - Success" >> $GITHUB_STEP_SUMMARY
-            echo "The command output matches the expected result." >> $GITHUB_STEP_SUMMARY
+            echo "### :white_check_mark: Test Multiline Output - Success" >> $GITHUB_STEP_SUMMARY            
           else
             echo "Test Multiline Output - Failed"
             echo "### :x: Test Multiline Output - Failed" >> $GITHUB_STEP_SUMMARY
-            printf "Expected Result:\n%s" "$expected_result" >> $GITHUB_STEP_SUMMARY
-            printf "Command Output:\n%s" "$command_output" >> $GITHUB_STEP_SUMMARY             
+            printf "Expected Result:\n%s\n" "$expected_result" >> $GITHUB_STEP_SUMMARY
+            printf "Output Result:\n%s\n" "$output_result" >> $GITHUB_STEP_SUMMARY             
             exit 1
           fi
