@@ -86,19 +86,25 @@ jobs:
       - name: Test Multiline Output
         id: test-output-multiline
         run: |
+          test_name="Test Multiline Output"
+
           expected_result=$'### Heading\n\n* Bullet C:\\\\\n* Points\n'
           output_result="${{ steps.test-action.outputs.app-build_multiline }}"
-
-          printf "Expected Result:\n%s" "$expected_result"
-          printf "Output Result:\n%s" "$output_result"          
+          
+          expected_result_content=$(printf "Expected Result:\n%s\n" "$expected_result")
+          output_result_content=$(printf "Output Result:\n%s\n" "$output_result")
+           
+          printf "%s" "$expected_result_content"
+          printf "%s" "$output_result_content"
 
           if [[ "$output_result" == "$expected_result" ]]; then
-            echo "Test Multiline Output - Success"
-            echo "### :white_check_mark: Test Multiline Output - Success" >> $GITHUB_STEP_SUMMARY            
+            echo "$test_name - Success"
+            echo "### :white_check_mark: $test_name - Success" >> $GITHUB_STEP_SUMMARY            
           else
-            echo "Test Multiline Output - Failed"
-            echo "### :x: Test Multiline Output - Failed" >> $GITHUB_STEP_SUMMARY
-            printf "Expected Result:\n%s\n" "$expected_result" >> $GITHUB_STEP_SUMMARY
-            printf "Output Result:\n%s\n" "$output_result" >> $GITHUB_STEP_SUMMARY             
+            echo "$test_name - Failed"
+            echo "### :x: $test_name - Failed" >> $GITHUB_STEP_SUMMARY
+            
+            printf "%s" "$expected_result_content" >> $GITHUB_STEP_SUMMARY
+            printf "%s" "$output_result_content" >> $GITHUB_STEP_SUMMARY                      
             exit 1
           fi

@@ -17,7 +17,7 @@ _escape_backslashes_when_line_followed() {
     if [[ "$word" == *'\\\n'* ]]; then
       wordLineMarked=${word//\\n/#LN#}
       wordLineMarkedEscaped=${wordLineMarked//\\/\\\\}
-	  echo -n "${wordLineMarkedEscaped//#LN#/\\n} "      
+	    echo -n "${wordLineMarkedEscaped//#LN#/\\n} "      
     else      
       echo -n "$word "
     fi
