@@ -11,10 +11,9 @@ _replace_dots() {
   echo "${string//./$replacement}"
 }
 
-_escape_backslashes_followed_lines() {
+_escape_backslashes() {
   local inputString="$1"  
-  local escapedString=$(echo "$inputString" | sed 's/\\\\n/\\\\\\\\n/g')
-  echo "$escapedString"
+  echo "${inputString//\\\\/\\\\\\\\}"
 }
 
 _set_github_output() {
@@ -40,11 +39,9 @@ _set_github_outputs() {
   echo "$properties" | while read -r propertyLine;
   do  
      propertyName=$(_replace_dots "${propertyLine%%=*}" "$propertyNameDotReplace")
-     propertyValue="${propertyLine#*=}"
+     propertyValue=$(_escape_backslashes "${propertyLine#*=}")
      echo "$propertyLine"
-     echo "$propertyValue"
-
-     echo "${propertyValue//\\\\/\\\\\\\\}"
+     echo "$propertyValue"     
 
     _set_github_output "$propertyName" "$propertyValue"
   done
