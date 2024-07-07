@@ -11,9 +11,20 @@ _replace_dots() {
   echo "${string//./$replacement}"
 }
 
+# _escape_backslashes() {
+#   local inputString="$1"
+#   echo "${inputString//\\\\/\\\\\\\\}"
+# }
+
 _escape_backslashes() {
   local inputString="$1"  
-  echo "${inputString//\\\\/\\\\\\\\}"
+  for word in $inputString; do    
+    if [[ $word == *'\\\n'* ]]; then      
+      echo -n "${word//\\/\\\\} "
+    else      
+      echo -n "$word "
+    fi
+  done  
 }
 
 _set_github_output() {
