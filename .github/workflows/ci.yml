@@ -94,8 +94,8 @@ jobs:
           expected_result_content=$(printf "Expected Result:\n%s" "$expected_result")
           output_result_content=$(printf "Output Result:\n%s" "$output_result")
            
-          printf "%s\n" "$expected_result_content"
-          printf "%s\n" "$output_result_content"
+          printf "%s\n\n" "$expected_result_content"
+          printf "%s\n\n" "$output_result_content"
 
           if [[ "$output_result" == "$expected_result" ]]; then
             echo "$test_name - Success"
@@ -104,7 +104,7 @@ jobs:
             echo "$test_name - Failed"
             echo "### :x: $test_name - Failed" >> $GITHUB_STEP_SUMMARY
             
-            printf "%s\n" "$expected_result_content" >> $GITHUB_STEP_SUMMARY
-            printf "%s\n" "$output_result_content" >> $GITHUB_STEP_SUMMARY                    
+            printf "%s\n\n" "$expected_result_content" >> $GITHUB_STEP_SUMMARY
+            printf "%s\n\n" "$output_result_content" >> $GITHUB_STEP_SUMMARY                    
             exit 1
           fi
