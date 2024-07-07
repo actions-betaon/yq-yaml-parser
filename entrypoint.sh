@@ -11,20 +11,17 @@ _replace_dots() {
   echo "${string//./$replacement}"
 }
 
-# _escape_backslashes() {
-#   local inputString="$1"
-#   echo "${inputString//\\\\/\\\\\\\\}"
-# }
-
-_escape_backslashes() {
-  local inputString="$1"  
-  if [[ "$inputString" == *'\\\n'* ]]; then
-    inputLfMarked=${inputString//\\n/#LF#}
-    inputLfMarkedEscaped=${inputLfMarked//\\/\\\\}
-	echo "${inputLfMarkedEscaped//#LF#/\\n}"    
-  else      
-    echo "$inputString"
-  fi  
+_escape_backslashes_when_line_followed() {
+  local input="$1"  
+  for word in $input; do    
+    if [[ "$word" == *'\\\n'* ]]; then
+      wordLineMarked=${word//\\n/#LN#}
+      wordLineMarkedEscaped=${wordLineMarked//\\/\\\\}
+	  echo -n "${wordLineMarkedEscaped//#LN#/\\n} "      
+    else      
+      echo -n "$word "
+    fi
+  done  
 }
 
 _set_github_output() {
@@ -50,10 +47,7 @@ _set_github_outputs() {
   echo "$properties" | while read -r propertyLine;
   do  
      propertyName=$(_replace_dots "${propertyLine%%=*}" "$propertyNameDotReplace")
-     propertyValue=$(_escape_backslashes "${propertyLine#*=}")
-     echo "$propertyLine"
-     echo "$propertyValue"     
-
+     propertyValue=$(_escape_backslashes_when_line_followed "${propertyLine#*=}")
     _set_github_output "$propertyName" "$propertyValue"
   done
 }

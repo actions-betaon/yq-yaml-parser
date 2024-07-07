@@ -5,7 +5,8 @@ app-build:
   multiline: |
     ### Heading
 
-    * Bullet C:\\
+    * Bullet C:\ E:\
+    * Driver D:\
     * Points
 app-tests:
   working-dir: ./app/tests
