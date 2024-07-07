@@ -18,13 +18,13 @@ _replace_dots() {
 
 _escape_backslashes() {
   local inputString="$1"  
-  for word in $inputString; do    
-    if [[ $word == *'\\\n'* ]]; then      
-      echo -n "${word//\\/\\\\} "
-    else      
-      echo -n "$word "
-    fi
-  done  
+  if [[ "$inputString" == *'\\\n'* ]]; then
+    inputLfMarked=${inputString//\\n/#LF#}
+    inputLfMarkedEscaped=${inputLfMarked//\\/\\\\}
+	echo "${inputLfMarkedEscaped//#LF#/\\n}"    
+  else      
+    echo "$inputString"
+  fi  
 }
 
 _set_github_output() {
