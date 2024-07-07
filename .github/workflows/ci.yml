@@ -89,8 +89,8 @@ jobs:
           expected_result=$'### Heading\n\n* Bullet C:\\ \n* Points\n'
           command_output="${{ steps.test-action.outputs.app-build_multiline }}"
 
-          echo -e "Expected Result:\n $expected_result"
-          echo -e "Command Output:\n $command_output"
+          printf "Expected Result:\n%s" "$expected_result"
+          printf "Command Output:\n%s" "$command_output"          
 
           if [[ "$command_output" == "$expected_result" ]]; then
             echo "Test Multiline Output - Success"
