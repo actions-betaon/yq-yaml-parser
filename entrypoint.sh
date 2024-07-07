@@ -11,44 +11,40 @@ _replace_dots() {
   echo "${string//./$replacement}"
 }
 
-_set_github_output() {  
-  local propDotted="$1"
-  local value="$2"
-  local propDotReplacement="$3"  
-
-  prop=$(_replace_dots "$propDotted" "$propDotReplacement")
+_set_github_output() {
+  local propertyName="$1"
+  local propertyValue="$2"  
   
-  valueWithoutLF=$(echo "${value//\\n/}")  
-  if [ "$value" != "$valueWithoutLF" ]; then    
+  propertyValueWithoutLineEscape=$(printf "%s" "${propertyValue}" | sed 's/\\n//g')
+  if [ "$propertyValue" != "$propertyValueWithoutLineEscape" ]; then    
     {
-      echo "$prop<<EOF"
-      echo -e "$value"
+      echo "$propertyName<<EOF"
+      printf "%b\n" "$propertyValue"
       echo "EOF"
     } >> "$GITHUB_OUTPUT"
   else
-    echo "$prop=$value" >> "$GITHUB_OUTPUT"
+    echo "$propertyName=$propertyValue" >> "$GITHUB_OUTPUT"
   fi
 }
 
-_set_github_outputs() {  
-  local parsedProperties="$1"
-  local propDotReplacement="$2"  
+_set_github_outputs() {
+  local properties="$1"
+  local propertyNameDotReplace="$2"  
 
-  echo "$parsedProperties" | while read -r propAndValue;
+  echo "$properties" | while read -r propertyLine;
   do
-     prop="${propAndValue%%=*}"
-     value="${propAndValue#*=}"
-    _set_github_output "$prop" "$value" "$propDotReplacement"
+     propertyName=$(_replace_dots "${propertyLine%%=*}" "$propertyNameDotReplace")
+     propertyValue="${propertyLine#*=}"
+    _set_github_output "$propertyName" "$propertyValue"
   done
 }
 
 set -e
 
-_lineBreakMark="#LF#"
+_propertyNameDotReplace="_"
+_yqProperties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
 
-_properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
-
-_set_github_outputs "$_properties" "_"
+_set_github_outputs "$_yqProperties" "$_propertyNameDotReplace"
 
 # Use workflow commands to do things like set debug messages
 #echo "::notice file=entrypoint.sh,line=59::$_properties"
