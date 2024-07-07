@@ -44,7 +44,7 @@ _set_github_outputs() {
      echo "$propertyLine"
      echo "$propertyValue"
 
-     echo "${propertyValue//\\n/#LF#}"
+     echo "${propertyValue//\\\\/\\\\\\\\}"
 
     _set_github_output "$propertyName" "$propertyValue"
   done
