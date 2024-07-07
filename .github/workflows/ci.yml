@@ -83,6 +83,14 @@ jobs:
         id: output
         run: echo "${{ toJson(steps.test-action.outputs) }}"
 
-      - name: Print Multiline Output
-        id: output-multiline
-        run: echo "${{ steps.test-action.outputs.app-build_multiline }}"
+      - name: Test Multiline Output
+        id: test-output-multiline
+        run: |
+          expected_result=$'### Heading\n\n    * Bullet C:\\ \n    * Points\n'
+          command_output="${{ steps.test-action.outputs.app-build_multiline }}"
+          if [[ "$command_output" == "$expected_result" ]]; then
+            echo "Test Multiline Output - Success"
+          else
+            echo "Test Multiline Output - Failed"
+            exit 1
+          fi
