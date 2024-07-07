@@ -86,7 +86,7 @@ jobs:
       - name: Test Multiline Output
         id: test-output-multiline
         run: |
-          expected_result=$'### Heading\n\n    * Bullet C:\\ \n    * Points\n'
+          expected_result=$'### Heading\n\n* Bullet C:\\ \n* Points\n'
           command_output="${{ steps.test-action.outputs.app-build_multiline }}"
           if [[ "$command_output" == "$expected_result" ]]; then
             echo "Test Multiline Output - Success"
