@@ -86,7 +86,7 @@ jobs:
       - name: Test Multiline Output
         id: test-output-multiline
         run: |
-          expected_result=$'### Heading\n\n* Bullet C:\\ \n* Points\n'
+          expected_result=$'### Heading\n\n* Bullet C:\\\n* Points\n'
           output_result="${{ steps.test-action.outputs.app-build_multiline }}"
 
           printf "Expected Result:\n%s" "$expected_result"
