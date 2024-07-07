@@ -43,6 +43,9 @@ _set_github_outputs() {
      propertyValue=$(_escape_backslashes_followed_lines "${propertyLine#*=}")
      echo "$propertyLine"
      echo "$propertyValue"
+
+     echo "${propertyValue//\\n/#LF#}"
+
     _set_github_output "$propertyName" "$propertyValue"
   done
 }
