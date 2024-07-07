@@ -16,15 +16,15 @@ _set_github_output() {
   local propertyValue="$2"  
   
   propertyValueWithoutLineEscape=$(printf "%s" "${propertyValue}" | sed 's/\\n//g')
-  #if [ "$propertyValue" != "$propertyValueWithoutLineEscape" ]; then    
-  #  {
-  #    echo "$propertyName<<EOF"
-  #    printf "%b\n" "$propertyValue"
-  #    echo "EOF"
-  #  } >> "$GITHUB_OUTPUT"
-  #else
+  if [ "$propertyValue" != "$propertyValueWithoutLineEscape" ]; then    
+    {
+      echo "$propertyName<<EOF"
+      printf "%b\n" "$propertyValue"
+      echo "EOF"
+    } >> "$GITHUB_OUTPUT"
+  else
     echo "$propertyName=$propertyValue" >> "$GITHUB_OUTPUT"
-  #fi
+  fi
 }
 
 _set_github_outputs() {

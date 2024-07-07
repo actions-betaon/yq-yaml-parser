@@ -94,7 +94,11 @@ jobs:
 
           if [[ "$command_output" == "$expected_result" ]]; then
             echo "Test Multiline Output - Success"
+            echo "### :white_check_mark: Test Multiline Output - Success" >> $GITHUB_STEP_SUMMARY
+            echo "The command output matches the expected result." >> $GITHUB_STEP_SUMMARY
           else
             echo "Test Multiline Output - Failed"
+            echo "### :x: Test Multiline Output - Failed" >> $GITHUB_STEP_SUMMARY
+            echo "The command output does not match the expected result." >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
