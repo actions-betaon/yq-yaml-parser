@@ -18,11 +18,11 @@ _escape_backslashes() {
   lineMark="#LN#"  
   slashMark="#SL#"  
   
-  output=${input//\\n/$lineMark}
-  output=${output//\\/$slashMark}
+  #output=${input//\\n/$lineMark}
+  #output=${output//\\/$slashMark}
   #output=${output//$lineMark/\\n}
 
-  echo "$output"
+  echo "$input"
 }
 
 _escape_backslashes_old() {

@@ -89,9 +89,10 @@ jobs:
           test_name="Test Multiline Output"
 
           printf "%b\n" "${{ steps.test-action.outputs.app-build_multiline }}"
+          echo -e "${{ steps.test-action.outputs.app-build_multiline }}"
 
           expected_result='### Heading\n\n* Bullet C:\\\\ E:\\\n* Driver D:\\\n* Points\n'
-          output_result="${{ steps.test-action.outputs.app-build_multiline }}"
+          output_result=echo "${{ steps.test-action.outputs.app-build_multiline }}"
           
           output_result_line_marked=$(echo "$output_result" | sed "s/\\\\n/"#LF#"/g")
           output_result_line_slash_marked=$(echo "$output_result_line_marked" | sed "s/\\\\/"#SL#"/g")
