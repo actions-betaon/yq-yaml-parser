@@ -11,15 +11,48 @@ _replace_dots() {
   echo "${string//./$replacement}"
 }
 
+_escape_backslashes() {
+  local input="$1"
+  local newInput="$input"
+  search="\\\n"
+  # Extrair palavras distintas
+  distinct_words=$(echo "$input" | awk '{ for (i=1; i<=NF; i++) words[$i] } END { for (w in words) print w }')
+  
+  # Iterar sobre cada palavra distinta
+  echo "$distinct_words" | while IFS= read -r word; do
+    currentWord="$word"
+    wordLfMarked=${word//\\n/#LF#}
+	  wordSlashMarked=${wordLfMarked//\\/#SL#}
+    if [[ "$wordSlashMarked" == *"#SL##LF#"* ]]; then
+      replaceWord=${word//\\/\\\\}
+	  #echo "$replaceWord"
+	  #echo "$currentWord"	  
+	  newInput=${newInput//"$currentWord"/"$replaceWord"}
+	  #echo "$newInput"
+    fi
+  done
+  
+  echo "$newInput"
+}
+
 _escape_backslashes_when_line_followed() {
-  local input="$1"  
-  for word in $input; do    
+  local input="$1"
+  local totalWords=$(echo $input | wc -w)
+  local count=0
+
+  for word in $input; do
+    count=$((count + 1))
+
     if [[ "$word" == *'\\\n'* ]]; then
       wordLineMarked=${word//\\n/#LN#}
       wordLineMarkedEscaped=${wordLineMarked//\\/\\\\}
-	    echo -n "${wordLineMarkedEscaped//#LN#/\\n} "      
+	    echo -n "${wordLineMarkedEscaped//#LN#/\\n}"
     else      
-      echo -n "$word "
+      echo -n "$word"
+    fi
+
+    if [[ $count -lt $totalWords ]]; then
+      echo -n " "
     fi
   done  
 }
@@ -32,7 +65,7 @@ _set_github_output() {
   if [ "$propertyValue" != "$propertyValueWithoutLineEscape" ]; then    
     {
       echo "$propertyName<<EOF"
-      printf "%b\n" "$propertyValue"
+      echo -e "$propertyValue"
       echo "EOF"
     } >> "$GITHUB_OUTPUT"
   else
@@ -47,7 +80,8 @@ _set_github_outputs() {
   echo "$properties" | while read -r propertyLine;
   do  
      propertyName=$(_replace_dots "${propertyLine%%=*}" "$propertyNameDotReplace")
-     propertyValue=$(_escape_backslashes_when_line_followed "${propertyLine#*=}")
+     #propertyValue=$(_escape_backslashes_when_line_followed "${propertyLine#*=}")
+     propertyValue="${propertyLine#*=}"
     _set_github_output "$propertyName" "$propertyValue"
   done
 }

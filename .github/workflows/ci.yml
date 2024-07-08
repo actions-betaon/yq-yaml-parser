@@ -79,8 +79,8 @@ jobs:
         with:          
           file-path: ./yq-test.yml
 
-      - name: Print Output
-        id: output
+      - name: Print Outputs
+        id: outputs
         run: echo "${{ toJson(steps.test-action.outputs) }}"
 
       - name: Test Multiline Output
@@ -104,7 +104,7 @@ jobs:
             echo "$test_name - Failed"
             echo "### :x: $test_name - Failed" >> $GITHUB_STEP_SUMMARY
             
-            printf "%s\n\n" "$expected_result_content" >> $GITHUB_STEP_SUMMARY            
-            printf "%s\n" "$output_result_content" >> $GITHUB_STEP_SUMMARY                    
+            printf "%s\n\n" "$expected_result_content" >> $GITHUB_STEP_SUMMARY
+            printf "%s\n" "$output_result_content" >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
