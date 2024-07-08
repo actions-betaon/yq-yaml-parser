@@ -18,11 +18,10 @@ _set_github_output() {
   
   propertyValueWithoutLineEscape=$(printf "%s" "${propertyValue}" | sed 's/\\n//g')
   if [ "$propertyValue" != "$propertyValueWithoutLineEscape" ]; then
-    echo "AQUII"
-    propertyValueMultiLine='### Heading\n\n* Bullet C:\\\\ E:\\\n* Driver D:\\\n* Points\n'
+    echo "AQUII"    
     {
       echo "$propertyName<<EOF"      
-      printf "%b\n" "$propertyValueMultiLine"
+      printf "%s" "$propertyValue"
       echo "EOF"
     } >> "$GITHUB_OUTPUT"
   else
