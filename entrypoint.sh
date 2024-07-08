@@ -82,6 +82,14 @@ _set_github_outputs() {
 
 set -e
 
+
+ printf "%b\n" "E:\\\n*"
+ printf "%b\n" "E:\\\\n*"
+ printf "%b\n" "E:\\\\\n*"
+ printf "%b\n" "E:\\\\\\n*"
+ printf "%b\n" "E:\\\\\\\n*"
+ printf "%b\n" "E:\\\\\\\\n*"
+
 _propertyNameDotReplace="_"
 _yqProperties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
 
