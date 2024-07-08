@@ -80,7 +80,8 @@ _set_github_outputs() {
   echo "$properties" | while read -r propertyLine;
   do  
      propertyName=$(_replace_dots "${propertyLine%%=*}" "$propertyNameDotReplace")
-     propertyValue=$(_escape_backslashes "${propertyLine#*=}")
+     #propertyValue=$(_escape_backslashes "${propertyLine#*=}")
+     propertyValue="${propertyLine#*=}"
      echo "$propertyLine"     
      echo "$propertyValue"
     _set_github_output "$propertyName" "$propertyValue"
