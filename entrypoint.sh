@@ -37,8 +37,8 @@ _set_github_outputs() {
   do  
      propertyName=$(_replace_dots "${propertyLine%%=*}" "$propertyNameDotReplace")     
      propertyValue="${propertyLine#*=}"
-     echo "$propertyLine"     
-     echo "$propertyValue"
+     #echo "$propertyLine"     
+     #echo "$propertyValue"
     _set_github_output "$propertyName" "$propertyValue"
   done < <(echo "$properties")
 }
