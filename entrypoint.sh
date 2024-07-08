@@ -17,11 +17,11 @@ _escape_backslashes() {
     
   while IFS= read -r word; do    
     wordLfMarked=$(echo "$word" | sed "s/\\\\n/"#LF#"/g")
-	wordLfSlashMarked=$(echo "$wordLfMarked" | sed "s/\\\\/"#SL#"/g")	
+	  wordLfSlashMarked=$(echo "$wordLfMarked" | sed "s/\\\\/"#SL#"/g")	
     if [[ "$wordLfSlashMarked" == *"#SL##LF#"* ]]; then
-	  savedWord="$word"
+	    savedWord="$word"
       replaceWord=${savedWord//\\/\\\\}	  
-	  input=${input//"$word"/"$replaceWord"}
+	    input=${input//"$word"/"$replaceWord"}
     fi
   done < <(echo "$distinct_words")
   
