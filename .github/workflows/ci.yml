@@ -92,7 +92,7 @@ jobs:
           output_result="${{ steps.test-action.outputs.app-build_multiline }}"
           
           expected_result_content=$(printf "Expected Result:\n%s" "$expected_result")
-          output_result_content=$(printf "Output Result:\n%s" "$output_result")
+          output_result_content=$(printf "%b\n" "Output Result: $output_result")
            
           printf "%s\n\n" "$expected_result_content"          
           printf "%s\n" "$output_result_content"
