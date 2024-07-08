@@ -10,4 +10,4 @@ COPY entrypoint.sh /entrypoint.sh
 USER root
 
 # Configure the container to be run as an executable
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint-wk.sh"]
