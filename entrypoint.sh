@@ -8,51 +8,52 @@ _yaml_to_properties() {
 _replace_dots() {
   local string="$1"
   local replacement="$2"
-  echo "${string//./$replacement}"
+  echo "$string" | awk -v rep="$replacement" 'BEGIN{FS=OFS=":"} {gsub(/\./,rep,$1); print}'
 }
 
+_set_github_output() {  
+  local prop="$1"
+  local value="$2"
+  local lineBreakMark="$3"
 
-_set_github_output() {
-  local propertyName="$1"
-  local propertyValue="$2"  
-  
-  propertyValueWithoutLineEscape=$(printf "%s" "${propertyValue}" | sed 's/\\n//g')
-  if [ "$propertyValue" != "$propertyValueWithoutLineEscape" ]; then
-    echo "AQUII"
-    propertyValueMultiLine='### Heading\n\n* Bullet C:\\\\ E:\\\n* Driver D:\\\n* Points\n'
+  if echo $value | grep -iq "$lineBreakMark"; then
+    propertyValueMultiLine=$(echo "${propertyValue//\\n/$'\n'}")
     {
-      echo "$propertyName<<EOF"      
-      printf "%b\n" "$propertyValueMultiLine"
-      echo "EOF"
+      echo "$prop<<EOF"
+      echo -e "$propertyValueMultiLine"
+      echo EOF
     } >> "$GITHUB_OUTPUT"
   else
-    echo "$propertyName=$propertyValue" >> "$GITHUB_OUTPUT"
+    echo "$prop=$value" >>"$GITHUB_OUTPUT"
   fi
 }
 
-_set_github_outputs() {
-  local properties="$1"
-  local propertyNameDotReplace="$2"  
+_set_github_outputs() {  
+  local parsedProperties="$1"
+  local lineBreakMark="$2"
 
-  while read -r propertyLine;
-  do  
-     propertyName=$(_replace_dots "${propertyLine%%=*}" "$propertyNameDotReplace")     
-     propertyValue="${propertyLine#*=}"
-     echo "$propertyLine"     
-     echo "$propertyValue"
-    _set_github_output "$propertyName" "$propertyValue"
-  done < <(echo "$properties")
+  echo "$parsedProperties" | while read -r propAndValue;
+  do
+     prop="${propAndValue%%=*}"
+     value="${propAndValue#*=}"
+    _set_github_output "$prop" "$value" "$lineBreakMark"
+  done
 }
 
 set -e
 
-_propertyNameDotReplace="_"
-_yqProperties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
+_lineBreakMark="#LF#"
 
-_set_github_outputs "$_yqProperties" "$_propertyNameDotReplace"
+_properties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
+_escaped_multiline_properties=$(echo "${_properties//\\n/$_lineBreakMark}")
+_parsed_properties=$(_replace_dots "$_escaped_multiline_properties" "_")
+
+echo "Parsed properties: $_parsed_properties"
+
+_set_github_outputs "$_parsed_properties" "$_lineBreakMark"
 
 # Use workflow commands to do things like set debug messages
-#echo "::notice file=entrypoint.sh,line=59::$_properties"
+#echo "::notice file=entrypoint.sh,line=30::$_properties"
 
 # Write outputs to the $GITHUB_OUTPUT file
 echo "time=$(date)" >>"$GITHUB_OUTPUT"
