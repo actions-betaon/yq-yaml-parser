@@ -22,7 +22,7 @@ _set_github_output() {
     propertyValueMultiLine='### Heading\n\n* Bullet C:\\\\ E:\\\n* Driver D:\\\n* Points\n'
     {
       echo "$propertyName<<EOF"      
-      printf "%b\n" "$propertyValueMultiLine"
+      printf "%b\n" $propertyValueMultiLine
       echo "EOF"
     } >> "$GITHUB_OUTPUT"
   else
