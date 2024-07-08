@@ -87,4 +87,4 @@ jobs:
         id: test-output-multiline
         run: |
           test_name="Test Multiline Output"
-          echo -e "${{ steps.test-action.outputs.app-build_multiline }}"
+          echo "${{ steps.test-action.outputs.app-build_multiline }}"
