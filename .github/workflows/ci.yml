@@ -90,3 +90,4 @@ jobs:
           test_name="Test Multiline Output"
           echo -e "${{ steps.test-action.outputs.app-build_multiline }}"
           printf "%s\n" "${{ steps.test-action.outputs.app-build_multiline }}"
+          echo "${{ steps.test-action.outputs.app-build_multiline }}" | sed 's/\\n/\\\\n/g' | sed 's/\\\\/\\\\\\\\/g'
