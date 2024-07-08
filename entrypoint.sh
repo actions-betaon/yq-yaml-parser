@@ -16,10 +16,11 @@ _escape_backslashes() {
   local input="$1"
   
   lineMark="#LN#"  
+  slashMark="#SL#"  
   
   output=${input//\\n/$lineMark}
-  output=${output//\\/\\\\}
-  output=${output//$lineMark/\\n}
+  output=${output//\\/$slashMark}
+  #output=${output//$lineMark/\\n}
 
   echo "$output"
 }
@@ -95,10 +96,10 @@ _set_github_outputs() {
   while read -r propertyLine;
   do  
      propertyName=$(_replace_dots "${propertyLine%%=*}" "$propertyNameDotReplace")
-     #propertyValue=$(_escape_backslashes "${propertyLine#*=}")
-     propertyValue="${propertyLine#*=}"
+     propertyValue=$(_escape_backslashes "${propertyLine#*=}")
+     #propertyValue="${propertyLine#*=}"
      echo "$propertyLine"     
-     echo -e "$propertyValue"
+     echo "$propertyValue"
     _set_github_output "$propertyName" "$propertyValue"
   done < <(echo "$properties")
 }
