@@ -30,7 +30,7 @@ _set_github_output() {
     echo -e "$propertyValueMultiLine"
     {
       echo "$propertyName<<EOF"      
-      printf '%b\n' "$propertyValue"      
+      printf '%b\n' "$propertyValueMultiLine"
       echo "EOF"
     } >> "$GITHUB_OUTPUT"
   else
