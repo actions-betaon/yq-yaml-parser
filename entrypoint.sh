@@ -15,13 +15,20 @@ _escape_backslashes() {
   local input="$1"  
   distinct_words=$(echo "$input" | awk '{ for (i=1; i<=NF; i++) words[$i] } END { for (w in words) print w }')
     
-  while IFS= read -r word; do    
+  while IFS= read -r word; do
+    savedWord="$word"  
     wordLfMarked=$(echo "$word" | sed "s/\\\\n/"#LF#"/g")
-	  wordLfSlashMarked=$(echo "$wordLfMarked" | sed "s/\\\\/"#SL#"/g")	
+    wordLfSlashMarked=$(echo "$wordLfMarked" | sed "s/\\\\/"#SL#"/g")	
     if [[ "$wordLfSlashMarked" == *"#SL##LF#"* ]]; then
-	    savedWord="$word"
+      newWord=$(echo "$wordLfSlashMarked" | sed "s/"#SL#"/"#SL##SL#"/g") 
+      newWord=$(echo "$newWord" | sed "s/"#SL#"/\\\\/g") 
+      newWord=$(echo "$newWord" | sed "s/"#LF#"/\\\\n/g") 
+      savedWord="$word"
+      savedWordLineMarked=${savedWord//\\n/#LN#}
+      savedWordLineMarkedEscaped=${wordLineMarked//\\/\\\\}
       replaceWord=${savedWord//\\/\\\\}	  
-	    input=${input//"$word"/"$replaceWord"}
+      input=${input//"$word"/"$newWord"}
+	  #echo "$input"
     fi
   done < <(echo "$distinct_words")
   
@@ -74,7 +81,7 @@ _set_github_outputs() {
   do  
      propertyName=$(_replace_dots "${propertyLine%%=*}" "$propertyNameDotReplace")
      propertyValue=$(_escape_backslashes "${propertyLine#*=}")
-     echo "$propertyLine"
+     echo "$propertyLine"     
      echo "$propertyValue"
     _set_github_output "$propertyName" "$propertyValue"
   done
