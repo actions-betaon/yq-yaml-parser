@@ -18,11 +18,11 @@ _escape_backslashes() {
   lineMark="#LN#"  
   slashMark="#SL#"  
   
-  #output=${input//\\n/$lineMark}
-  #output=${output//\\/$slashMark}
+  output=${input//\\n/$lineMark}
+  output=${output//\\/$slashMark}
   #output=${output//$lineMark/\\n}
 
-  echo "$input"
+  echo "$output"
 }
 
 _escape_backslashes_old() {
@@ -75,13 +75,14 @@ _set_github_output() {
   local propertyName="$1"
   local propertyValue="$2"  
   
-  propertyValueWithoutLineEscape=$(printf "%s" "${propertyValue}" | sed 's/\\n//g')
-  if [ "$propertyValue" != "$propertyValueWithoutLineEscape" ]; then
-    propertyValueMultiLine=$(echo "${propertyValue//\\n/$'\n'}")
+  propertyValueWithoutLineEscape=$(printf "%s" "${propertyValue}" | sed "s/#LN#//g")
+  if [ "$propertyValue" != "$propertyValueWithoutLineEscape" ]; then    
+    propertyValueMultiLine=${propertyValue//"#LN"/\\n}
+    propertyValueMultiLine=${propertyValueMultiLine//"#SL#"/\\}
     {
       echo "$propertyName<<EOF"
       #printf "%b" "$propertyValueMultiLine"
-      echo -e '### Heading\n\n* Bullet C:\\\\ E:\\\n* Driver D:\\\n* Points\n'
+      echo -e "$propertyValueMultiLine"
       echo "EOF"
     } >> "$GITHUB_OUTPUT"
   else
