@@ -78,7 +78,7 @@ _set_github_output() {
   if [ "$propertyValue" != "$propertyValueWithoutLineEscape" ]; then    
     {
       echo "$propertyName<<EOF"
-      printf "%b\n" "$propertyValue"
+      printf "%b" "$propertyValue"
       echo "EOF"
     } >> "$GITHUB_OUTPUT"
   else
@@ -94,9 +94,9 @@ _set_github_outputs() {
   do  
      propertyName=$(_replace_dots "${propertyLine%%=*}" "$propertyNameDotReplace")
      #propertyValue=$(_escape_backslashes "${propertyLine#*=}")
-     propertyValue='${propertyLine#*=}'
+     propertyValue="${propertyLine#*=}"
      echo "$propertyLine"     
-     echo "$propertyValue"
+     echo -e "$propertyValue"
     _set_github_output "$propertyName" "$propertyValue"
   done < <(echo "$properties")
 }
