@@ -78,8 +78,7 @@ _set_github_output() {
   if [ "$propertyValue" != "$propertyValueWithoutLineEscape" ]; then    
     {
       echo "$propertyName<<EOF"
-      #printf "%b\n" $propertyValue
-      echo -e $propertyValue
+      printf "%b\n" "$propertyValue"      
       echo "EOF"
     } >> "$GITHUB_OUTPUT"
   else
