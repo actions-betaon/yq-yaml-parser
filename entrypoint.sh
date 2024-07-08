@@ -18,10 +18,19 @@ _set_github_output() {
   
   propertyValueWithoutLineEscape=$(printf "%s" "${propertyValue}" | sed 's/\\n//g')    
   if [ "$propertyValue" != "$propertyValueWithoutLineEscape" ]; then
-    echo "AQUII"
+
+    lineMark="#LN#"  
+    slashMark="#SL#"  
+  
+    propertyValueMultiLine=${propertyValue//\\n/$lineMark}
+    propertyValueMultiLine=${propertyValueMultiLine//\\/\\\\}
+    propertyValueMultiLine=${propertyValueMultiLine//$lineMark/$'\n'}
+
+    echo "$propertyValueMultiLine"
+    echo -e "$propertyValueMultiLine"
     {
       echo "$propertyName<<EOF"      
-      printf "%b\\n" "$propertyValue"
+      printf "%b\\n" "$propertyValueMultiLine"
       echo "EOF"
     } >> "$GITHUB_OUTPUT"
   else
