@@ -17,11 +17,13 @@ _set_github_output() {
   local propertyValue="$2"  
   
   propertyValueWithoutLineEscape=$(printf "%s" "${propertyValue}" | sed 's/\\n//g')
+  propertyValueEscaped=$(printf "%b\n" "$propertyValue")
+  echo "$propertyValueEscaped"
   if [ "$propertyValue" != "$propertyValueWithoutLineEscape" ]; then
-    echo "AQUII"    
+    echo "AQUII"
     {
       echo "$propertyName<<EOF"      
-      printf "%s\n" "$propertyValue"
+      printf "%b\n" "$propertyValue"
       echo "EOF"
     } >> "$GITHUB_OUTPUT"
   else
@@ -36,9 +38,7 @@ _set_github_outputs() {
   while read -r propertyLine;
   do  
      propertyName=$(_replace_dots "${propertyLine%%=*}" "$propertyNameDotReplace")     
-     propertyValue="${propertyLine#*=}"
-     #echo "$propertyLine"     
-     #echo "$propertyValue"
+     propertyValue="${propertyLine#*=}"     
     _set_github_output "$propertyName" "$propertyValue"
   done < <(echo "$properties")
 }
