@@ -11,7 +11,21 @@ _replace_dots() {
   echo "${string//./$replacement}"
 }
 
+
 _escape_backslashes() {
+  local input="$1"
+  
+  lineMark="#LN#"
+  slashMark="#SL#"
+  
+  output=$(echo "$input" | sed "s/\\\\n/$lineMark/g")
+  output=$(echo "$output" | sed "s/\\\\/$slashMark/g")   
+  output=$(echo "$output" | sed "s/$slashMark/\\\\\\\\/g") 
+  output=$(echo "$output" | sed "s/$lineMark/\\\\n/g")
+  echo "$output"
+}
+
+_escape_backslashes_old() {
   local input="$1"  
   distinct_words=$(echo "$input" | awk '{ for (i=1; i<=NF; i++) words[$i] } END { for (w in words) print w }')
     
@@ -80,8 +94,8 @@ _set_github_outputs() {
   echo "$properties" | while read -r propertyLine;
   do  
      propertyName=$(_replace_dots "${propertyLine%%=*}" "$propertyNameDotReplace")
-     #propertyValue=$(_escape_backslashes "${propertyLine#*=}")
-     propertyValue="${propertyLine#*=}"
+     propertyValue=$(_escape_backslashes "${propertyLine#*=}")
+     #propertyValue="${propertyLine#*=}"
      echo "$propertyLine"     
      echo "$propertyValue"
     _set_github_output "$propertyName" "$propertyValue"
