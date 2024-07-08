@@ -15,13 +15,12 @@ _replace_dots() {
 _escape_backslashes() {
   local input="$1"
   
-  lineMark="#LN#"
-  slashMark="#SL#"
+  lineMark="#LN#"  
   
-  output=$(echo "$input" | sed "s/\\\\n/$lineMark/g")
-  output=$(echo "$output" | sed "s/\\\\/$slashMark/g")   
-  output=$(echo "$output" | sed "s/$slashMark/\\\\\\\\/g") 
-  output=$(echo "$output" | sed "s/$lineMark/\\\\n/g")
+  output=${input//\\n/$lineMark}
+  output=${output//\\/\\\\}
+  output=${output//$lineMark/\\n}
+
   echo "$output"
 }
 
@@ -91,15 +90,15 @@ _set_github_outputs() {
   local properties="$1"
   local propertyNameDotReplace="$2"  
 
-  echo "$properties" | while read -r propertyLine;
+  while read -r propertyLine;
   do  
      propertyName=$(_replace_dots "${propertyLine%%=*}" "$propertyNameDotReplace")
-     #propertyValue=$(_escape_backslashes "${propertyLine#*=}")
-     propertyValue="${propertyLine#*=}"
+     propertyValue=$(_escape_backslashes "${propertyLine#*=}")
+     #propertyValue="${propertyLine#*=}"
      echo "$propertyLine"     
      echo "$propertyValue"
     _set_github_output "$propertyName" "$propertyValue"
-  done
+  done < <(echo "$properties")
 }
 
 set -e
