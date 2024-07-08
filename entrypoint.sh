@@ -21,7 +21,7 @@ _set_github_output() {
     echo "AQUII"    
     {
       echo "$propertyName<<EOF"      
-      printf "%s" "$propertyValue"
+      printf "%s\n" "$propertyValue"
       echo "EOF"
     } >> "$GITHUB_OUTPUT"
   else
