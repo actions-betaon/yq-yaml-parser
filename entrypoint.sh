@@ -77,6 +77,7 @@ _set_github_output() {
   
   propertyValueWithoutLineEscape=$(printf "%s" "${propertyValue}" | sed 's/\\n//g')
   if [ "$propertyValue" != "$propertyValueWithoutLineEscape" ]; then
+    echo "AQUII"
     propertyValueMultiLine=$(echo "${propertyValue//\\n/$'\n'}")
     {
       echo "$propertyName<<EOF"
