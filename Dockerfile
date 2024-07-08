@@ -5,9 +5,9 @@ FROM mikefarah/yq:4.43.1
 #WORKDIR /usr/src
 
 # Copy any source file(s) required for the action
-COPY entrypoint.sh /entrypoint.sh
+COPY entrypoint-wk.sh /entrypoint.sh
 
 USER root
 
 # Configure the container to be run as an executable
-ENTRYPOINT ["/entrypoint-wk.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
