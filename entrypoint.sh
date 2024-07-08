@@ -17,7 +17,12 @@ _set_github_output() {
   local propertyValue="$2"  
   
   propertyValueWithoutLineEscape=$(printf "%s" "${propertyValue}" | sed 's/\\n//g')
+
+  propertyValuePrinted=$(printf "%b\n" "$propertyValue")
   propertyValueEscaped=$(printf "%b\n" "$propertyValue")
+
+  echo "$propertyValuePrinted"
+  echo "Escaped"
   echo "$propertyValueEscaped"
   if [ "$propertyValue" != "$propertyValueWithoutLineEscape" ]; then
     echo "AQUII"
