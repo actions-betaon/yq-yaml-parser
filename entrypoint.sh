@@ -75,14 +75,13 @@ _set_github_output() {
   local propertyName="$1"
   local propertyValue="$2"  
   
-  propertyValueWithoutLineEscape=$(printf "%s" "${propertyValue}" | sed "s/#LN#//g")
-  if [ "$propertyValue" != "$propertyValueWithoutLineEscape" ]; then    
-    propertyValueMultiLine=${propertyValue//"#LN"/\\n}
-    propertyValueMultiLine=${propertyValueMultiLine//"#SL#"/\\}
+  propertyValueWithoutLineEscape=$(printf "%s" "${propertyValue}" | sed 's/\\n//g')
+  if [ "$propertyValue" != "$propertyValueWithoutLineEscape" ]; then
+    propertyValueMultiLine=$(echo "${propertyValue//\\n/$'\n'}")
     {
       echo "$propertyName<<EOF"
       #printf "%b" "$propertyValueMultiLine"
-      echo -e "$propertyValueMultiLine"
+      echo -e "### Heading\n\n* Bullet C:\\\\ E:\\\\\n* Driver D:\\\\\n* Points\n"
       echo "EOF"
     } >> "$GITHUB_OUTPUT"
   else
@@ -97,8 +96,8 @@ _set_github_outputs() {
   while read -r propertyLine;
   do  
      propertyName=$(_replace_dots "${propertyLine%%=*}" "$propertyNameDotReplace")
-     propertyValue=$(_escape_backslashes "${propertyLine#*=}")
-     #propertyValue="${propertyLine#*=}"
+     #propertyValue=$(_escape_backslashes "${propertyLine#*=}")
+     propertyValue="${propertyLine#*=}"
      echo "$propertyLine"     
      echo "$propertyValue"
     _set_github_output "$propertyName" "$propertyValue"
