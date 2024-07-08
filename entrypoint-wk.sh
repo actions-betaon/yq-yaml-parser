@@ -17,10 +17,10 @@ _set_github_output() {
   local lineBreakMark="$3"
 
   if echo $value | grep -iq "$lineBreakMark"; then
-    value_multiline=$(echo "${value//$lineBreakMark/$'\n'}")
+    propertyValueMultiLine=$(echo "${propertyValue//\\n/$'\n'}")
     {
       echo "$prop<<EOF"
-      echo "$value_multiline"
+      echo -e "$propertyValueMultiLine"
       echo EOF
     } >> "$GITHUB_OUTPUT"
   else

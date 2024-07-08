@@ -75,10 +75,12 @@ _set_github_output() {
   local propertyValue="$2"  
   
   propertyValueWithoutLineEscape=$(printf "%s" "${propertyValue}" | sed 's/\\n//g')
-  if [ "$propertyValue" != "$propertyValueWithoutLineEscape" ]; then    
+  if [ "$propertyValue" != "$propertyValueWithoutLineEscape" ]; then
+    propertyValueMultiLine=$(echo "${propertyValue//\\n/$'\n'}")
     {
       echo "$propertyName<<EOF"
-      printf "%b" "$propertyValue"
+      #printf "%b" "$propertyValueMultiLine"
+      echo -e "$propertyValueMultiLine"
       echo "EOF"
     } >> "$GITHUB_OUTPUT"
   else
