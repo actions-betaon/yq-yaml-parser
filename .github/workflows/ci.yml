@@ -88,7 +88,7 @@ jobs:
         run: |
           test_name="Test Multiline Output"
 
-          printf "%b" "${{ steps.test-action.outputs.app-build_multiline }}"
+          printf "%b" ${{ steps.test-action.outputs.app-build_multiline }}
 
           expected_result=$'### Heading\n\n* Bullet C:\\\\\n* Points\n'
           output_result="${{ steps.test-action.outputs.app-build_multiline }}"
