@@ -16,14 +16,7 @@ _set_github_output() {
   local propertyName="$1"
   local propertyValue="$2"  
   
-  propertyValueWithoutLineEscape=$(printf "%s" "${propertyValue}" | sed 's/\\n//g')
-
-  propertyValuePrinted=$(printf "%b\n" "$propertyValue")
-  propertyValueEscaped=$(printf "%b\n" "$propertyValue")
-
-  echo "$propertyValuePrinted"
-  echo "Escaped"
-  echo "$propertyValueEscaped"
+  propertyValueWithoutLineEscape=$(printf "%s" "${propertyValue}" | sed 's/\\n//g')    
   if [ "$propertyValue" != "$propertyValueWithoutLineEscape" ]; then
     echo "AQUII"
     {
@@ -54,6 +47,8 @@ _propertyNameDotReplace="_"
 _yqProperties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
 
 _set_github_outputs "$_yqProperties" "$_propertyNameDotReplace"
+
+cat $GITHUB_OUTPUT
 
 # Use workflow commands to do things like set debug messages
 #echo "::notice file=entrypoint.sh,line=59::$_properties"
