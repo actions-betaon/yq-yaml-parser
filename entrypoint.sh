@@ -11,18 +11,23 @@ _replace_dots() {
   echo "${string//./$replacement}"
 }
 
+_property_value_to_multiline() {
+    local propertyValue="$1"
+    local lineMark="#LN#"
+    local propertyValueMultiLine=${propertyValue//\\n/$lineMark}
+    propertyValueMultiLine=${propertyValueMultiLine//\\/$'\\\\'}
+    propertyValueMultiLine=${propertyValueMultiLine//$lineMark/$'\n'}
+    propertyValueMultiLine=${propertyValueMultiLine%$'\n'}
+    echo "$propertyValueMultiLine"
+}
+
 _set_github_output() {
   local propertyName="$1"
   local propertyValue="$2"
   
   propertyValueWithoutLine=$(printf "%s" "${propertyValue}" | sed 's/\\n//g')
   if [ "$propertyValue" != "$propertyValueWithoutLine" ]; then
-    
-    lineMark="#LN#"  
-    propertyValueMultiLine=${propertyValue//\\n/$lineMark}
-    propertyValueMultiLine=${propertyValueMultiLine//\\/$'\\\\'}
-    propertyValueMultiLine=${propertyValueMultiLine//$lineMark/$'\n'}
-    propertyValueMultiLine=${propertyValueMultiLine%$'\n'}
+    propertyValueMultiLine=$(_property_value_to_multiline "$propertyValue")
     {
       echo "$propertyName<<EOF"
       printf "%b\n" "$propertyValueMultiLine"     
