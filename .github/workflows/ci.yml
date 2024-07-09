@@ -90,9 +90,10 @@ jobs:
           test_name="Test Multiline Output"
           echo "${{ steps.test-action.outputs.app-build_multiline }}"
           output_result="${{ steps.test-action.outputs.app-build_multiline }}"
+          output_result_escaped=$(printf "%s" "${output_result//\\/\\\\}")
 
           output_result_content=$"Output Result:\n $output_result"
           printf "%s\n" "$output_result_content"
 
           printf "%s\n" "$output_result" >> $GITHUB_STEP_SUMMARY
-          printf "%s\n" "${output_result//\\/\\\\}" >> $GITHUB_STEP_SUMMARY
+          printf "%s\n" "$output_result_escaped" >> $GITHUB_STEP_SUMMARY
