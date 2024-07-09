@@ -103,9 +103,9 @@ jobs:
             echo "### :x: Test Failed: $test_name" >> $GITHUB_STEP_SUMMARY
 
             echo "Expected Result:" >> $GITHUB_STEP_SUMMARY
-            echo "$expected_result" >> $GITHUB_STEP_SUMMARY
+            echo "$expected_result_escaped" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
 
             echo "Output Result:" >> $GITHUB_STEP_SUMMARY
-            echo "$output_result" >> $GITHUB_STEP_SUMMARY
+            echo "$expected_result_escaped" >> $GITHUB_STEP_SUMMARY
           fi
