@@ -88,7 +88,7 @@ jobs:
         #shell: bash
         run: |
           test_name="Test Multiline Output"
-          
+          echo "${{ steps.test-action.outputs.app-build_multiline }}"
           output_result="${{ steps.test-action.outputs.app-build_multiline }}"
 
           output_result_content=$"Output Result:\n $output_result"
