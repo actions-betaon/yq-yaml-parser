@@ -88,7 +88,10 @@ jobs:
         #shell: bash
         run: |
           test_name="Test Multiline Output"
-          echo -e "${{ steps.test-action.outputs.app-build_multiline }}"
-          echo "${{ steps.test-action.outputs.app-build_multiline }}"
-          printf "%s\n" "${{ steps.test-action.outputs.app-build_multiline }}"
-          echo "${{ steps.test-action.outputs.app-build_multiline }}" | sed 's/\\n/\\\\n/g' | sed 's/\\/\\\\/g'
+          
+          output_result=echo "${{ steps.test-action.outputs.app-build_multiline }}"
+
+          output_result_content=$"Output Result:\n $output_result"
+          printf "%b\n" "$output_result_content"
+
+          printf "%b\n" "$output_result_content" >> $GITHUB_STEP_SUMMARY          
