@@ -1,6 +1,16 @@
+action-test:
+  # comment
+  comment-line: ./app = #comment line
+  version: '9.x'
+  multiline: |
+    ### Heading
+
+    * Bullet C:\\ E:\
+    * Driver D:\
+    * Points
 app-build:
   # comment
-  working-dir: ./app = #comment line
+  comment-line: ./app = #comment line
   version: '9.x'
   multiline: |
     ### Heading

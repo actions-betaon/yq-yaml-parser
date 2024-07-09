@@ -83,13 +83,44 @@ jobs:
       #   id: outputs
       #   run: echo "${{ toJson(steps.test-action.outputs) }}"
 
-      - name: Test Multiline Output
+      - name: Test Output Comment Line
+        id: test-output-comment-line
+        run: |
+          test_name="Test Output Comment Line"
+          
+          expected_result="./app = "
+          output_result="${{ steps.test-action.outputs.action-test_comment-line }}"
+          
+          echo "Expected Result:"
+          echo "$expected_result" 
+          echo ""
+          echo "Output Result:"
+          echo "$output_result" 
+          echo ""
+
+          if [[ "$output_result" == "$expected_result" ]]; then
+            echo "Test Passed: $test_name"
+            echo "### :white_check_mark: Test Passed: $test_name" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Test Failed: $test_name"
+            echo "### :x: Test Failed: $test_name" >> $GITHUB_STEP_SUMMARY
+
+            echo "Expected Result:" >> $GITHUB_STEP_SUMMARY            
+            echo "$expected_result" >> $GITHUB_STEP_SUMMARY
+
+            echo "" >> $GITHUB_STEP_SUMMARY
+
+            echo "Output Result:" >> $GITHUB_STEP_SUMMARY
+            echo "$output_result" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Test Output Multiline
         id: test-output-multiline        
         run: |
-          test_name="Test Multiline Output"
+          test_name="Test Output Multiline"
           
           expected_result=$(printf "%b" "### Heading\n\n* Bullet C:\\\\\\\\ E:\\\\\n* Driver D:\\\\\n* Points")
-          output_result="${{ steps.test-action.outputs.app-build_multiline }}"
+          output_result="${{ steps.test-action.outputs.action-test_multiline }}"
           
           echo "Expected Result:"
           echo "$expected_result" 
