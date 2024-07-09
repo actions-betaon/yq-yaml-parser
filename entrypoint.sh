@@ -22,13 +22,10 @@ _set_github_output() {
   
     propertyValueMultiLine=${propertyValue//\\n/$lineMark}
     propertyValueMultiLine=${propertyValueMultiLine//\\/$'\\\\'}
-    propertyValueMultiLine=${propertyValueMultiLine//$lineMark/$'\n'}
-
-    propertyYq=$(yq -r ".${propertyName//_/.}" "$INPUT_YAML_FILE_PATH") 
+    propertyValueMultiLine=${propertyValueMultiLine//$lineMark/$'\n'}    
     {
       echo "$propertyName<<EOF"
-      #printf "%b\n" "$propertyValueMultiLine"
-      printf "%s\n" "$propertyYq"
+      printf "%b\n" "$propertyValueMultiLine"     
       echo "EOF"
     } >> "$GITHUB_OUTPUT"
   else
