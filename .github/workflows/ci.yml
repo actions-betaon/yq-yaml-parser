@@ -95,14 +95,17 @@ jobs:
           output_result="${{ steps.test-action.outputs.app-build_multiline }}"
           output_result_escaped=$(printf "%s" "${output_result//\\/\\\\}")
             
-          if [[ "$output_result" == "$expected_result" ]]; then
+          if [[ "$output_result" != "$expected_result" ]]; then
             echo "Test Passed: $test_name"
+            echo "### :white_check_mark: Test Passed: $test_name" >> $GITHUB_STEP_SUMMARY
           else
             echo "Test Failed: $test_name"
+            echo "### :x: Test Failed: $test_name" >> $GITHUB_STEP_SUMMARY
+
+            echo "Expected Result:" >> $GITHUB_STEP_SUMMARY
+            echo "$expected_result" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+
+            echo "Output Result:" >> $GITHUB_STEP_SUMMARY
+            echo "$output_result" >> $GITHUB_STEP_SUMMARY
           fi
-
-          output_result_content=$"Output Result:\n $output_result"
-          printf "%s\n" "$output_result_content"
-
-          printf "%s\n" "$output_result" >> $GITHUB_STEP_SUMMARY
-          printf "%s\n" "$output_result_escaped" >> $GITHUB_STEP_SUMMARY
