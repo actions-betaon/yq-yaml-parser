@@ -1,4 +1,4 @@
-action-test:
+test-action:
   # comment
   comment-line: ./app = #comment line
   version: '9.x'

@@ -41,7 +41,7 @@ jobs:
 
       - name: Build the Container
         id: build
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
@@ -65,31 +65,36 @@ jobs:
         run: echo "${{ steps.run.outputs.time }}"            
 
   test-action:
-    name: GitHub Actions Test
+    name: GitHub Actions Test Output
     runs-on: ubuntu-latest
 
+    outputs:
+      comment-line: ${{ steps.action.outputs.test-action_comment-line }}
+      multiline: ${{ steps.action.outputs.test-action_multiline }}
     steps:
       - name: Checkout
         id: checkout
         uses: actions/checkout@v4
 
-      - name: Test Local Action
-        id: test-action
+      - name: Test Action
+        id: action
         uses: ./
         with:          
           file-path: ./yq-test.yml
 
-      # - name: Print Outputs
-      #   id: outputs
-      #   run: echo "${{ toJson(steps.test-action.outputs) }}"
+  test-action-output-comment-line:    
+    name: GitHub Actions Test Output - Comment Line
+    needs: test-action
+    runs-on: ubuntu-latest
 
+    steps:
       - name: Test Output Comment Line
         id: test-output-comment-line
         run: |
           test_name="Test Output Comment Line"
           
           expected_result="./app ="
-          output_result="${{ steps.test-action.outputs.action-test_comment-line }}"
+          output_result="${{ needs.test-action.outputs.comment-line }}"
           
           echo "Expected Result:"
           echo "$expected_result" 
@@ -112,15 +117,21 @@ jobs:
 
             echo "Output Result:" >> $GITHUB_STEP_SUMMARY
             echo "$output_result" >> $GITHUB_STEP_SUMMARY
-          fi
+          fi      
 
+  test-action-output-multiline:    
+    name: GitHub Actions Test Output - Multiline
+    needs: test-action
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Test Output Multiline
         id: test-output-multiline        
         run: |
           test_name="Test Output Multiline"
           
           expected_result=$(printf "%b" "### Heading\n\n* Bullet C:\\\\\\\\ E:\\\\\n* Driver D:\\\\\n* Points")
-          output_result="${{ steps.test-action.outputs.action-test_multiline }}"
+          output_result="${{ needs.test-action.outputs.multiline }}"
           
           echo "Expected Result:"
           echo "$expected_result" 
@@ -146,4 +157,4 @@ jobs:
 
             echo "Output Result:" >> $GITHUB_STEP_SUMMARY
             echo "$output_result_summary" >> $GITHUB_STEP_SUMMARY
-          fi
+          fi          
