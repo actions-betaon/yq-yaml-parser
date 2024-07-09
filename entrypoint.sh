@@ -18,11 +18,11 @@ _set_github_output() {
   propertyValueWithoutLine=$(printf "%s" "${propertyValue}" | sed 's/\\n//g')
   if [ "$propertyValue" != "$propertyValueWithoutLine" ]; then
     
-    lineMark="#LN#"
-  
+    lineMark="#LN#"  
     propertyValueMultiLine=${propertyValue//\\n/$lineMark}
     propertyValueMultiLine=${propertyValueMultiLine//\\/$'\\\\'}
-    propertyValueMultiLine=${propertyValueMultiLine//$lineMark/$'\n'}    
+    propertyValueMultiLine=${propertyValueMultiLine//$lineMark/$'\n'}
+    propertyValueMultiLine=${propertyValueMultiLine%$'\n'}
     {
       echo "$propertyName<<EOF"
       printf "%b\n" "$propertyValueMultiLine"     
