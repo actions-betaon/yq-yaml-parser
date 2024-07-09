@@ -92,6 +92,6 @@ jobs:
           output_result="${{ steps.test-action.outputs.app-build_multiline }}"
 
           output_result_content=$"Output Result:\n $output_result"
-          printf "%b\n" "$output_result_content"
+          printf "%s\n" "$output_result_content"
 
-          printf "%b\n" "$output_result_content" >> $GITHUB_STEP_SUMMARY          
+          printf "%s\n" "$output_result_content" >> $GITHUB_STEP_SUMMARY          
