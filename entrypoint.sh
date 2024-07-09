@@ -11,25 +11,20 @@ _replace_dots() {
   echo "${string//./$replacement}"
 }
 
-
 _set_github_output() {
   local propertyName="$1"
-  local propertyValue="$2"  
+  local propertyValue="$2"
   
-  propertyValueWithoutLineEscape=$(printf "%s" "${propertyValue}" | sed 's/\\n//g')    
+  propertyValueWithoutLineEscape=$(printf "%s" "${propertyValue}" | sed 's/\\n//g')
   if [ "$propertyValue" != "$propertyValueWithoutLineEscape" ]; then
-
-    lineMark="#LN#"  
-    slashMark="#SL#"  
+    
+    lineMark="#LN#"
   
     propertyValueMultiLine=${propertyValue//\\n/$lineMark}
-    propertyValueMultiLine=${propertyValueMultiLine//\\/\\\\}
-    propertyValueMultiLine=${propertyValueMultiLine//$lineMark/$'\n'}
-
-    echo "$propertyValueMultiLine"
-    echo -e "$propertyValueMultiLine"
+    propertyValueMultiLine=${propertyValueMultiLine//\\/$'\\'}
+    propertyValueMultiLine=${propertyValueMultiLine//$lineMark/$'\n'}   
     {
-      echo "$propertyName<<EOF"      
+      echo "$propertyName<<EOF"
       printf "%b\n" "$propertyValueMultiLine"
       echo "EOF"
     } >> "$GITHUB_OUTPUT"
