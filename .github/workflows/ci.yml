@@ -79,9 +79,9 @@ jobs:
         with:          
           file-path: ./yq-test.yml
 
-      - name: Print Outputs
-        id: outputs
-        run: echo "${{ toJson(steps.test-action.outputs) }}"
+      # - name: Print Outputs
+      #   id: outputs
+      #   run: echo "${{ toJson(steps.test-action.outputs) }}"
 
       - name: Test Multiline Output
         id: test-output-multiline
