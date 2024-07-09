@@ -84,35 +84,35 @@ jobs:
       #   run: echo "${{ toJson(steps.test-action.outputs) }}"
 
       - name: Test Multiline Output
-        id: test-output-multiline
-        #shell: bash
+        id: test-output-multiline        
         run: |
           test_name="Test Multiline Output"
           
           expected_result=$(printf "%b" "### Heading\n\n* Bullet C:\\\\\\\\ E:\\\\\n* Driver D:\\\\\n* Points")
-          expected_result_escaped=$(printf "%s" "${expected_result//\\/\\\\}")
-                    
-          output_result="${{ steps.test-action.outputs.app-build_multiline }}"
-          output_result_escaped=$(printf "%s" "${output_result//\\/\\\\}")
+          output_result="${{ steps.test-action.outputs.app-build_multiline }}"          
           
           echo "Expected Result:"
           echo "$expected_result" 
           echo ""
           echo "Output Result:"
           echo "$output_result" 
+          echo ""
 
-          if [[ "$output_result" != "$expected_result" ]]; then
+          if [[ "$output_result" == "$expected_result" ]]; then
             echo "Test Passed: $test_name"
             echo "### :white_check_mark: Test Passed: $test_name" >> $GITHUB_STEP_SUMMARY
           else
             echo "Test Failed: $test_name"
             echo "### :x: Test Failed: $test_name" >> $GITHUB_STEP_SUMMARY
 
-            echo "Expected Result:" >> $GITHUB_STEP_SUMMARY
-            echo "$expected_result_escaped" >> $GITHUB_STEP_SUMMARY
+            expected_result_summary=$(printf "%s" "${expected_result//\\/\\\\}")
+            output_result_summary=$(printf "%s" "${output_result//\\/\\\\}")
+
+            echo "Expected Result:" >> $GITHUB_STEP_SUMMARY            
+            echo "$expected_result_summary" >> $GITHUB_STEP_SUMMARY
 
             echo "" >> $GITHUB_STEP_SUMMARY
 
             echo "Output Result:" >> $GITHUB_STEP_SUMMARY
-            echo "$expected_result_escaped" >> $GITHUB_STEP_SUMMARY
+            echo "$output_result_summary" >> $GITHUB_STEP_SUMMARY
           fi
