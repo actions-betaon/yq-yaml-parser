@@ -21,7 +21,7 @@ _set_github_output() {
     lineMark="#LN#"
   
     propertyValueMultiLine=${propertyValue//\\n/$lineMark}
-    propertyValueMultiLine=${propertyValueMultiLine//\\/$'\\'}
+    propertyValueMultiLine=${propertyValueMultiLine//\\/$'\\\\'}
     propertyValueMultiLine=${propertyValueMultiLine//$lineMark/$'\n'}   
     {
       echo "$propertyName<<EOF"
