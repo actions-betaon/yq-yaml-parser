@@ -15,17 +15,20 @@ _set_github_output() {
   local propertyName="$1"
   local propertyValue="$2"
   
-  propertyValueWithoutLineEscape=$(printf "%s" "${propertyValue}" | sed 's/\\n//g')
-  if [ "$propertyValue" != "$propertyValueWithoutLineEscape" ]; then
+  propertyValueWithoutLine=$(printf "%s" "${propertyValue}" | sed 's/\\n//g')
+  if [ "$propertyValue" != "$propertyValueWithoutLine" ]; then
     
     lineMark="#LN#"
   
     propertyValueMultiLine=${propertyValue//\\n/$lineMark}
     propertyValueMultiLine=${propertyValueMultiLine//\\/$'\\\\'}
-    propertyValueMultiLine=${propertyValueMultiLine//$lineMark/$'\n'}   
+    propertyValueMultiLine=${propertyValueMultiLine//$lineMark/$'\n'}
+
+    propertyYq=$(yq -r ".${propertyName//_/.}" yq-test.yaml) 
     {
       echo "$propertyName<<EOF"
-      printf "%b\n" "$propertyValueMultiLine"
+      #printf "%b\n" "$propertyValueMultiLine"
+      printf "%s\n" "$propertyYq"
       echo "EOF"
     } >> "$GITHUB_OUTPUT"
   else
