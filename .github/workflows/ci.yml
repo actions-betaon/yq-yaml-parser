@@ -16,8 +16,7 @@ jobs:
   test-docker:
     name: Docker Tests
     runs-on: ubuntu-latest
-
-    # Run a local registry to push to
+    
     services:
       registry:
         image: registry:2
@@ -50,7 +49,7 @@ jobs:
       - name: Run the Container
         id: run
         env:          
-          INPUT_YAML_FILE_PATH: ./yq-test.yml          
+          INPUT_YAML_FILE_PATH: ./yq-test-action.yml          
         run: |
           docker run \
             --workdir /github/workspace \
@@ -58,11 +57,7 @@ jobs:
             --volume "${{ runner.temp }}/_runner_file_commands":${{ runner.temp }}/_runner_file_commands \
             --env GITHUB_OUTPUT="$GITHUB_OUTPUT" \
             --env INPUT_YAML_FILE_PATH="${{ env.INPUT_YAML_FILE_PATH }}" \
-            --rm ${{ env.TEST_TAG }}
-
-      - name: Print Output
-        id: output
-        run: echo "${{ steps.run.outputs.time }}"            
+            --rm ${{ env.TEST_TAG }}                
 
   test-action:
     name: GitHub Actions Test Output
@@ -117,6 +112,7 @@ jobs:
 
             echo "Output Result:" >> $GITHUB_STEP_SUMMARY
             echo "$output_result" >> $GITHUB_STEP_SUMMARY
+            exit 1
           fi      
 
   test-action-output-multiline:    
@@ -157,4 +153,5 @@ jobs:
 
             echo "Output Result:" >> $GITHUB_STEP_SUMMARY
             echo "$output_result_summary" >> $GITHUB_STEP_SUMMARY
+            exit 1
           fi          

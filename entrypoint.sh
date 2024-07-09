@@ -56,12 +56,4 @@ _yqProperties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
 
 _set_github_outputs "$_yqProperties" "$_propertyNameDotReplace"
 
-cat $GITHUB_OUTPUT
-
-# Use workflow commands to do things like set debug messages
-#echo "::notice file=entrypoint.sh,line=59::$_properties"
-
-# Write outputs to the $GITHUB_OUTPUT file
-echo "time=$(date)" >>"$GITHUB_OUTPUT"
-
 exit 0
