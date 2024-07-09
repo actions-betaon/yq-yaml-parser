@@ -24,7 +24,7 @@ _set_github_output() {
     propertyValueMultiLine=${propertyValueMultiLine//\\/$'\\\\'}
     propertyValueMultiLine=${propertyValueMultiLine//$lineMark/$'\n'}
 
-    propertyYq=$(yq -r ".${propertyName//_/.}" yq-test.yaml) 
+    propertyYq=$(yq -r ".${propertyName//_/.}" "$INPUT_YAML_FILE_PATH") 
     {
       echo "$propertyName<<EOF"
       #printf "%b\n" "$propertyValueMultiLine"
