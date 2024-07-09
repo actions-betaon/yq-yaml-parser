@@ -88,9 +88,18 @@ jobs:
         #shell: bash
         run: |
           test_name="Test Multiline Output"
-          echo "${{ steps.test-action.outputs.app-build_multiline }}"
+          
+          expected_result=$(printf "%b" "### Heading\n\n* Bullet C:\\\\\\\\ E:\\\\\n* Driver D:\\\\\n* Points")
+          expected_result_escaped=$(printf "%s" "${expected_result//\\/\\\\}")
+
           output_result="${{ steps.test-action.outputs.app-build_multiline }}"
           output_result_escaped=$(printf "%s" "${output_result//\\/\\\\}")
+            
+          if [[ "$output_result" == "$expected_result" ]]; then
+            echo "Test Passed: $test_name"
+          else
+            echo "Test Failed: $test_name"
+          fi
 
           output_result_content=$"Output Result:\n $output_result"
           printf "%s\n" "$output_result_content"
