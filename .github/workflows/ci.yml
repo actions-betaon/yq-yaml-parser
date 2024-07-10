@@ -52,6 +52,7 @@ jobs:
           INPUT_YAML_FILE_PATH: ./yq-test-action.yml          
         run: |
           docker run \
+            --user root 
             --workdir /github/workspace \
             --volume "${{ github.workspace }}":/github/workspace \
             --volume "${{ runner.temp }}/_runner_file_commands":${{ runner.temp }}/_runner_file_commands \
