@@ -13,29 +13,29 @@ _replace_dots() {
 }
 
 _property_value_to_multiline() {
-    local propertyValue="$1"
-    local lineMark="#LN#"
-    
-    propertyValueMultiLine=$(echo "$propertyValue" | sed "s/\\\\n/$lineMark/g")
-    propertyValueMultiLine=$(echo "$propertyValueMultiLine" | sed 's/\\/\\\\/g')
-    propertyValueMultiLine=$(echo "$propertyValueMultiLine" | sed "s/$lineMark/\n/g")
-    propertyValueMultiLine=$(echo "$propertyValueMultiLine" | sed '${/^$/d;}')
-    echo "$propertyValueMultiLine"
+  local propertyValue="$1"
+  local lineMark="#LN#"
+
+  propertyValueMultiLine=$(echo "$propertyValue" | sed "s/\\\\n/$lineMark/g")
+  propertyValueMultiLine=$(echo "$propertyValueMultiLine" | sed 's/\\/\\\\/g')
+  propertyValueMultiLine=$(echo "$propertyValueMultiLine" | sed "s/$lineMark/\n/g")
+  propertyValueMultiLine=$(echo "$propertyValueMultiLine" | sed '${/^$/d;}')
+  echo "$propertyValueMultiLine"
 }
 
 _set_github_output() {
   local propertyName="$1"
   local propertyValue="$2"
-  
+
   if echo "$propertyValue" | grep -q '\\n'; then
     propertyValueMultiLine=$(_property_value_to_multiline "$propertyValue")
     {
       echo "$propertyName<<EOF"
-      printf "%b\n" "$propertyValueMultiLine"     
+      printf "%b\n" "$propertyValueMultiLine"
       echo "EOF"
-    } >> "$GITHUB_OUTPUT"
+    } >>"$GITHUB_OUTPUT"
   else
-    echo "$propertyName=$propertyValue" >> "$GITHUB_OUTPUT"
+    echo "$propertyName=$propertyValue" >>"$GITHUB_OUTPUT"
   fi
 }
 
@@ -43,10 +43,9 @@ _set_github_outputs() {
   local properties="$1"
   local propertyNameDotReplace="$2"
 
-  echo "$properties" | while read -r propertyLine;
-  do  
+  echo "$properties" | while read -r propertyLine; do
     propertyName=$(_replace_dots "${propertyLine%%=*}" "$propertyNameDotReplace")
-    propertyValue="${propertyLine#*=}"     
+    propertyValue="${propertyLine#*=}"
     _set_github_output "$propertyName" "$propertyValue"
   done
 }
