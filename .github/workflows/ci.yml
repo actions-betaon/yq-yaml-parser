@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - main
+      - feature/v1
 
 permissions:
   contents: read
@@ -16,7 +17,6 @@ jobs:
     name: Docker Tests
     runs-on: ubuntu-latest
 
-    # Run a local registry to push to
     services:
       registry:
         image: registry:2
@@ -24,7 +24,7 @@ jobs:
           - 5001:5000
 
     env:
-      TEST_TAG: localhost:5001/actions/hello-world-docer-action:latest
+      TEST_TAG: localhost:5001/actions/yq-yaml-parser-action:latest
 
     steps:
       - name: Checkout
@@ -40,7 +40,7 @@ jobs:
 
       - name: Build the Container
         id: build
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
@@ -49,14 +49,37 @@ jobs:
       - name: Run the Container
         id: run
         env:
-          INPUT_WHO_TO_GREET: Mona Lisa Octocat
+          INPUT_YAML_FILE_PATH: ./yq-test-action.yml
         run: |
           docker run \
-            --env INPUT_WHO_TO_GREET="${{ env.INPUT_WHO_TO_GREET }}" \
+            --workdir /github/workspace \
+            --volume "${{ github.workspace }}":/github/workspace \
+            --volume "${{ runner.temp }}/_runner_file_commands":${{ runner.temp }}/_runner_file_commands \
+            --env GITHUB_OUTPUT="$GITHUB_OUTPUT" \
+            --env INPUT_YAML_FILE_PATH="${{ env.INPUT_YAML_FILE_PATH }}" \
             --rm ${{ env.TEST_TAG }}
 
   test-action:
-    name: GitHub Actions Test
+    name: GitHub Actions Test Output
+    runs-on: ubuntu-latest
+
+    outputs:
+      comment-line: ${{ steps.action.outputs.test-action_comment-line }}
+      multiline: ${{ steps.action.outputs.test-action_multiline }}
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Test Action
+        id: action
+        uses: ./
+        with:
+          file-path: ./yq-test-action.yml
+
+  test-action-output-comment-line:
+    name: GitHub Actions Test Output - Comment Line
+    needs: test-action
     runs-on: ubuntu-latest
 
     steps:
@@ -64,12 +87,26 @@ jobs:
         id: checkout
         uses: actions/checkout@v4
 
-      - name: Test Local Action
-        id: test-action
-        uses: ./
-        with:
-          who-to-greet: Mona Lisa Octocat
+      - name: Test Output Comment Line
+        id: test-output-comment-line
+        run: |
+          test_name="Test Output Comment Line"
+          expected_result="./app ="
+          .github/scripts/test-action-output.sh "$test_name" "$expected_result" "${{ needs.test-action.outputs.comment-line }}"
 
-      - name: Print Output
-        id: output
-        run: echo "${{ steps.test-action.outputs.time }}"
+  test-action-output-multiline:
+    name: GitHub Actions Test Output - Multiline
+    needs: test-action
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Test Output Multiline
+        id: test-output-multiline
+        run: |
+          test_name="Test Output Multiline"
+          expected_result=$(printf "%b" "### Heading\n\n* Bullet C:\\\\\\\\ E:\\\\\n* Driver D:\\\\\n* Points")
+          .github/scripts/test-action-output.sh "$test_name" "$expected_result" "${{ needs.test-action.outputs.multiline }}"

@@ -1,12 +1,60 @@
-#!/bin/sh -l
+#!/bin/ash -l
+# shellcheck shell=dash
 
-# Use INPUT_<INPUT_NAME> to get the value of an input
-GREETING="Hello, $INPUT_WHO_TO_GREET!"
+_yaml_to_properties() {
+	local yaml_file="$1"
+	yq -o p --properties-separator '=' '... comments = ""' "$yaml_file"
+}
 
-# Use workflow commands to do things like set debug messages
-echo "::notice file=entrypoint.sh,line=7::$GREETING"
+_replace_dots() {
+	local string="$1"
+	local replacement="$2"
+	echo "${string}" | sed "s/\./${replacement}/g"
+}
 
-# Write outputs to the $GITHUB_OUTPUT file
-echo "time=$(date)" >>"$GITHUB_OUTPUT"
+_property_value_to_multiline() {
+	local propertyValue="$1"
+	local lineMark="#LN#"
+
+	propertyValueMultiLine=$(echo "$propertyValue" | sed "s/\\\\n/$lineMark/g")
+	propertyValueMultiLine=$(echo "$propertyValueMultiLine" | sed 's/\\/\\\\/g')
+	propertyValueMultiLine=$(echo "$propertyValueMultiLine" | sed "s/$lineMark/\n/g")
+	propertyValueMultiLine=$(echo "$propertyValueMultiLine" | sed '${/^$/d;}')
+	echo "$propertyValueMultiLine"
+}
+
+_set_github_output() {
+	local propertyName="$1"
+	local propertyValue="$2"
+
+	if echo "$propertyValue" | grep -q '\\n'; then
+		propertyValueMultiLine=$(_property_value_to_multiline "$propertyValue")
+		{
+			echo "$propertyName<<EOF"
+			printf "%b\n" "$propertyValueMultiLine"
+			echo "EOF"
+		} >>"$GITHUB_OUTPUT"
+	else
+		echo "$propertyName=$propertyValue" >>"$GITHUB_OUTPUT"
+	fi
+}
+
+_set_github_outputs() {
+	local properties="$1"
+	local propertyNameDotReplace="$2"
+
+	echo "$properties" | while read -r propertyLine; do
+		propertyName=$(_replace_dots "${propertyLine%%=*}" "$propertyNameDotReplace")
+		propertyValue="${propertyLine#*=}"
+		_set_github_output "$propertyName" "$propertyValue"
+	done
+}
+
+set -e
+
+_propertyNameDotReplace="_"
+_yqProperties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
+
+_set_github_outputs "$_yqProperties" "$_propertyNameDotReplace"
 
 exit 0

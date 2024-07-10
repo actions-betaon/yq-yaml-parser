@@ -1,0 +1,9 @@
+test-action:
+  # comment
+  comment-line: ./app = #comment line  
+  multiline: |
+    ### Heading
+
+    * Bullet C:\\ E:\
+    * Driver D:\
+    * Points
