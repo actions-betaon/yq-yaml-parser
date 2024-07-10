@@ -26,7 +26,7 @@ _set_github_output() {
   local propertyName="$1"
   local propertyValue="$2"
   
-  if [[ "$propertyValue" =~ '\\n' ]]; then
+  if echo "$propertyValue" | grep -q '\\n'; then
     propertyValueMultiLine=$(_property_value_to_multiline "$propertyValue")
     {
       echo "$propertyName<<EOF"
