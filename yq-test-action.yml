@@ -4,6 +4,6 @@ test-action:
   multiline: |
     ### Heading
 
-    * Bullets C:\\ E:\
+    * Bullet C:\\ E:\
     * Driver D:\
     * Points
