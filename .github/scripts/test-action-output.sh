@@ -21,12 +21,13 @@ else
 	expected_result_summary=$(printf "%s" "${expected_result//\\/\\\\}" | sed 's/ /·/g')
 	output_result_summary=$(printf "%s" "${output_result//\\/\\\\}" | sed 's/ /·/g')
 
-	echo "Expected Result:" >>"$GITHUB_STEP_SUMMARY"
-	echo "$expected_result_summary" >>"$GITHUB_STEP_SUMMARY"
+	{
+		echo "Expected Result:"
+		echo "$expected_result_summary"
+		echo ""
+		echo "Output Result:"
+		echo "$output_result_summary"
+	} >>"$GITHUB_STEP_SUMMARY"
 
-	echo "" >>"$GITHUB_STEP_SUMMARY"
-
-	echo "Output Result:" >>"$GITHUB_STEP_SUMMARY"
-	echo "$output_result_summary" >>"$GITHUB_STEP_SUMMARY"
 	exit 1
 fi
