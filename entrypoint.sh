@@ -1,4 +1,5 @@
 #!/bin/ash -l
+# shellcheck shell=dash
 
 _yaml_to_properties() {
   local yaml_file="$1"
@@ -56,7 +57,5 @@ _propertyNameDotReplace="_"
 _yqProperties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
 
 _set_github_outputs "$_yqProperties" "$_propertyNameDotReplace"
-
-cat $GITHUB_OUTPUT
 
 exit 0
