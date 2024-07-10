@@ -40,14 +40,14 @@ _set_github_output() {
 
 _set_github_outputs() {
   local properties="$1"
-  local propertyNameDotReplace="$2"  
+  local propertyNameDotReplace="$2"
 
-  while read -r propertyLine;
+  echo "$properties" | while read -r propertyLine;
   do  
-     propertyName=$(_replace_dots "${propertyLine%%=*}" "$propertyNameDotReplace")     
-     propertyValue="${propertyLine#*=}"     
+    propertyName=$(_replace_dots "${propertyLine%%=*}" "$propertyNameDotReplace")
+    propertyValue="${propertyLine#*=}"     
     _set_github_output "$propertyName" "$propertyValue"
-  done < <(echo "$properties")
+  done
 }
 
 set -e
