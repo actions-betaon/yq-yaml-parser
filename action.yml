@@ -1,27 +1,14 @@
-name: Hello, World!
-description: Greet someone and record the time
-author: GitHub Actions
+name: yq-yaml-parser
+description: Convert a yaml properties to GitHub Actions output
+author: BetaOn Actions
 
-# Define your inputs here.
-inputs:  
+inputs:
   file-path:
-    description: 'Path to the yaml file to read'
+    description: "Path to the yaml file to read"
     required: true
-  who-to-greet:
-    description: Who to greet
-    required: true
-    default: World
-
-# Define your outputs here.
-outputs:
-  time:
-    description: The time we greeted you
 
 runs:
   using: docker
   image: Dockerfile
-  #args:
-  #  - '${{ inputs.file-path }}'
   env:
-    INPUT_WHO_TO_GREET: ${{ inputs.who-to-greet }}
-    INPUT_YAML_FILE_PATH: '${{ inputs.file-path }}'
+    INPUT_YAML_FILE_PATH: "${{ inputs.file-path }}"

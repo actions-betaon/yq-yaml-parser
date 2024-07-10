@@ -16,7 +16,7 @@ jobs:
   test-docker:
     name: Docker Tests
     runs-on: ubuntu-latest
-    
+
     services:
       registry:
         image: registry:2
@@ -48,8 +48,8 @@ jobs:
 
       - name: Run the Container
         id: run
-        env:          
-          INPUT_YAML_FILE_PATH: ./yq-test-action.yml          
+        env:
+          INPUT_YAML_FILE_PATH: ./yq-test-action.yml
         run: |
           docker run \
             --workdir /github/workspace \
@@ -57,7 +57,7 @@ jobs:
             --volume "${{ runner.temp }}/_runner_file_commands":${{ runner.temp }}/_runner_file_commands \
             --env GITHUB_OUTPUT="$GITHUB_OUTPUT" \
             --env INPUT_YAML_FILE_PATH="${{ env.INPUT_YAML_FILE_PATH }}" \
-            --rm ${{ env.TEST_TAG }}                
+            --rm ${{ env.TEST_TAG }}
 
   test-action:
     name: GitHub Actions Test Output
@@ -74,10 +74,10 @@ jobs:
       - name: Test Action
         id: action
         uses: ./
-        with:          
+        with:
           file-path: ./yq-test-action.yml
 
-  test-action-output-comment-line:    
+  test-action-output-comment-line:
     name: GitHub Actions Test Output - Comment Line
     needs: test-action
     runs-on: ubuntu-latest
@@ -92,9 +92,9 @@ jobs:
         run: |
           test_name="Test Output Comment Line"
           expected_result="./app ="
-          .github/scripts/test-action-output.sh "$test_name" "$expected_result" "${{ needs.test-action.outputs.comment-line }}"        
+          .github/scripts/test-action-output.sh "$test_name" "$expected_result" "${{ needs.test-action.outputs.comment-line }}"
 
-  test-action-output-multiline:    
+  test-action-output-multiline:
     name: GitHub Actions Test Output - Multiline
     needs: test-action
     runs-on: ubuntu-latest
@@ -103,9 +103,9 @@ jobs:
       - name: Checkout
         id: checkout
         uses: actions/checkout@v4
-        
+
       - name: Test Output Multiline
-        id: test-output-multiline        
+        id: test-output-multiline
         run: |
           test_name="Test Output Multiline"
           expected_result=$(printf "%b" "### Heading\n\n* Bullet C:\\\\\\\\ E:\\\\\n* Driver D:\\\\\n* Points")
