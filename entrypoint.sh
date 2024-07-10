@@ -8,16 +8,17 @@ _yaml_to_properties() {
 _replace_dots() {
   local string="$1"
   local replacement="$2"
-  echo "${string//./$replacement}"
+  echo "${string}" | sed "s/\./${replacement}/g"
 }
 
 _property_value_to_multiline() {
     local propertyValue="$1"
     local lineMark="#LN#"
-    local propertyValueMultiLine=${propertyValue//\\n/$lineMark}
-    propertyValueMultiLine=${propertyValueMultiLine//\\/$'\\\\'}
-    propertyValueMultiLine=${propertyValueMultiLine//$lineMark/$'\n'}
-    propertyValueMultiLine=${propertyValueMultiLine%$'\n'}
+    
+    propertyValueMultiLine=$(echo "$propertyValue" | sed "s/\\\\n/$lineMark/g")
+    propertyValueMultiLine=$(echo "$propertyValueMultiLine" | sed 's/\\/\\\\/g')
+    propertyValueMultiLine=$(echo "$propertyValueMultiLine" | sed "s/$lineMark/\n/g")
+    propertyValueMultiLine=$(echo "$propertyValueMultiLine" | sed '${/^$/d;}')
     echo "$propertyValueMultiLine"
 }
 
@@ -55,5 +56,7 @@ _propertyNameDotReplace="_"
 _yqProperties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
 
 _set_github_outputs "$_yqProperties" "$_propertyNameDotReplace"
+
+cat $GITHUB_OUTPUT
 
 exit 0
