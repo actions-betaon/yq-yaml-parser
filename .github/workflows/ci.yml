@@ -83,6 +83,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
       - name: Test Output Comment Line
         id: test-output-comment-line
         run: |
@@ -96,6 +100,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+        
       - name: Test Output Multiline
         id: test-output-multiline        
         run: |
