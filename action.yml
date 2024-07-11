@@ -1,6 +1,10 @@
 name: yq-yaml-parser
-description: Convert a yaml properties to GitHub Actions output
+description: Convert a yaml to GitHub Actions outputs
 author: BetaOn Actions
+
+branding:
+  icon: code
+  color: blue
 
 inputs:
   file-path:
