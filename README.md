@@ -1,28 +1,11 @@
-# Hello, World! Docker Action
+# yq YAML parser action
 
-[![GitHub Super-Linter](https://github.com/actions/hello-world-docker-action/actions/workflows/linter.yml/badge.svg)](https://github.com/super-linter/super-linter)
-![CI](https://github.com/actions/hello-world-docker-action/actions/workflows/ci.yml/badge.svg)
+[![GitHub Super-Linter](https://github.com/actions-betaon/yq-yaml-parser/actions/workflows/linter.yml/badge.svg)](https://github.com/super-linter/super-linter)
+![CI](https://github.com/actions-betaon/yq-yaml-parser/actions/workflows/ci.yml/badge.svg)
 
-This action prints `Hello, World!` or `Hello, <who-to-greet>!` to the log. To
-learn how this action was built, see
-[Creating a Docker container action](https://docs.github.com/en/actions/creating-actions/creating-a-docker-container-action).
+This action reads values from a YAML file setting as action outputs.
 
-## Create Your Own Action
-
-To create your own action, you can use this repository as a template! Just
-follow the below instructions:
-
-1. Click the **Use this template** button at the top of the repository
-1. Select **Create a new repository**
-1. Select an owner and name for your new repository
-1. Click **Create repository**
-1. Clone your new repository
-
-> [!CAUTION]
->
-> Make sure to remove or update the [`CODEOWNERS`](./CODEOWNERS) file! For
-> details on how to use this file, see
-> [About code owners](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners).
+To learn how this action was built, see [Creating a Docker container action](https://docs.github.com/en/actions/creating-actions/creating-a-docker-container-action).
 
 ## Usage
 
@@ -34,78 +17,53 @@ name: Example Workflow
 on:
   workflow_dispatch:
     inputs:
-      who-to-greet:
-        description: Who to greet in the log
+      yaml-file-path:
+        description: "Path to the yaml file to parser"
         required: true
-        default: 'World'
         type: string
 
 jobs:
-  say-hello:
-    name: Say Hello
+  yq-yaml-parser:
+    name: Yq yaml parser
     runs-on: ubuntu-latest
 
-    steps:
-      # Change @main to a specific commit SHA or version tag, e.g.:
-      # actions/hello-world-docker-action@e76147da8e5c81eaf017dede5645551d4b94427b
-      # actions/hello-world-docker-action@v1.2.3
-      - name: Print to Log
-        id: print-to-log
-        uses: actions/hello-world-docker-action@main
+    steps:      
+      - name: Yaml to outputs
+        id: yaml-to-outputs
+        uses: actions-betaon/yq-yaml-parser@v1.0.0
         with:
-          who-to-greet: ${{ inputs.who-to-greet }}
+          file-path: '${{ inputs.yaml-file-path }}'
 ```
-
-For example workflow runs, check out the
-[Actions tab](https://github.com/actions/hello-world-docker-action/actions)!
-:rocket:
 
 ## Inputs
 
-| Input          | Default | Description                     |
-| -------------- | ------- | ------------------------------- |
-| `who-to-greet` | `World` | The name of the person to greet |
+| Input       | Description                     | Default |
+| ----------- | ------------------------------- | ----------- |
+| `file-path` | Path to the YAML file to parse as output | |
 
 ## Outputs
 
-| Output | Description             |
-| ------ | ----------------------- |
-| `time` | The time we greeted you |
+### Given
 
-## Test Locally
+```yaml
+sample:  
+  key-1: value 1
+  key-2: |
+    value 2 with
+    2 lines
+  key-3:
+    - nested value 1
+    - nested value 2
+```
 
-After you've cloned the repository to your local machine or codespace, you'll
-need to perform some initial setup steps before you can test your action.
+### Output as
 
-> [!NOTE]
->
-> You'll need to have a reasonably modern version of
-> [Docker](https://www.docker.com/get-started/) handy (e.g. docker engine
-> version 20 or later).
-
-1. :hammer_and_wrench: Build the container
-
-   Make sure to replace `actions/hello-world-docker-action` with an appropriate
-   label for your container.
-
-   ```bash
-   docker build -t actions/hello-world-docker-action .
-   ```
-
-1. :white_check_mark: Test the container
-
-   You can pass individual environment variables using the `--env` or `-e` flag.
-
-   ```bash
-   $ docker run --env INPUT_WHO_TO_GREET="Mona Lisa Octocat" actions/hello-world-docker-action
-   ::notice file=entrypoint.sh,line=7::Hello, Mona Lisa Octocat!
-   ```
-
-   Or you can pass a file with environment variables using `--env-file`.
-
-   ```bash
-   $ echo "INPUT_WHO_TO_GREET=\"Mona Lisa Octocat\"" > ./.env.test
-
-   $ docker run --env-file ./.env.test actions/hello-world-docker-action
-   ::notice file=entrypoint.sh,line=7::Hello, Mona Lisa Octocat!
-   ```
+```text
+sample_key-1=value 1
+sample_key-2<<EOF 
+value 2 with
+2 lines
+EOF
+sample_key-3_0=nested value 1
+sample_key-3_1=nested value 2
+```
