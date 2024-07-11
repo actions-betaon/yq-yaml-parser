@@ -1,9 +1,9 @@
-# Hello, World! Docker Action
+# yq YAML parser action
 
 [![GitHub Super-Linter](https://github.com/actions-betaon/yq-yaml-parser/actions/workflows/linter.yml/badge.svg)](https://github.com/super-linter/super-linter)
 ![CI](https://github.com/actions-betaon/yq-yaml-parser/actions/workflows/ci.yml/badge.svg)
 
-This action reads values from a YAML file, setting them into the `$GITHUB_OUTPUT` of the action.
+This action reads values from a YAML file setting as action outputs.
 
 To learn how this action was built, see [Creating a Docker container action](https://docs.github.com/en/actions/creating-actions/creating-a-docker-container-action).
 
@@ -39,7 +39,7 @@ jobs:
 
 | Input       | Description                     | Default |
 | ----------- | ------------------------------- | ----------- |
-| `file-path` | Path to the yaml file to parse as output | |
+| `file-path` | Path to the YAML file to parse as output | |
 
 ## Outputs
 
