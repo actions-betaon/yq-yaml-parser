@@ -6,6 +6,27 @@ _yaml_to_properties() {
 	yq -o p --properties-separator '=' '... comments = ""' "$yaml_file"
 }
 
+_yaml_properties_name() {
+	local yaml_file="$1"
+	local yaml_properties=$(_yaml_to_properties "$yaml_file")
+	local propertyNames=""
+	while IFS= read -r propertyLine; do
+		propertyName="${propertyLine%%=*}"
+		if [ -n "$propertyNames" ]; then
+			propertyNames="$propertyNames"$'\n'"$propertyName"
+		else
+			propertyNames="$propertyName"
+		fi
+	done < <(echo "$yaml_properties")
+	echo "$propertyNames"
+}
+
+_yaml_property_value() {
+	local yaml_file="$1"
+	local propertyName="$2"	
+	yq '."$propertyName"' "$yaml_file"
+}
+
 _replace_dots() {
 	local string="$1"
 	local replacement="$2"
