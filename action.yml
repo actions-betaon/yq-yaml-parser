@@ -31,5 +31,5 @@ runs:
   image: Dockerfile
   env:
     INPUT_YAML_FILE_PATH: "${{ inputs.file-path }}"
-    #INPUT_YAML_FILTERING_KEYS: "${{ inputs.filtering-keys }}"
-    #INPUT_YAML_RENAMING_OUTPUTS: "${{ inputs.renaming-outputs }}"
+    INPUT_YAML_FILTERING_KEYS: "${{ inputs.filtering-keys }}"
+    INPUT_YAML_RENAMING_OUTPUTS: "${{ inputs.renaming-outputs }}"
