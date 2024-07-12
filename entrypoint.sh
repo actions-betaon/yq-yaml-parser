@@ -33,20 +33,6 @@ _yaml_keys_names_outputs_values_rename() {
 
 	echo "$keysNamesOutputsValues" | while read -r keyNameOutputValueLine; do
 		keyNameOutputSearch="${keyNameOutputValueLine%%=*}"
-		keyNameOutputValue="${keyNameOutputValueLine#*=}"
-
-		keyNameOutputRenameValue=$(_yaml_keys_names_outputs_values_rename_value "$keyNameOutputSearch" "$keysNamesOutputsRename")
-		keyNameOutput=${keyNameOutputRenameValue:-$keyNameOutputSearch}
-		echo "$keyNameOutput=$keyNameOutputValue"
-	done
-}
-
-_yaml_keys_names_outputs_values_rename() {
-	local keysNamesOutputsValues="$1"
-	local keysNamesOutputsRename="$2"
-
-	echo "$keysNamesOutputsValues" | while read -r keyNameOutputValueLine; do
-		keyNameOutputSearch="${keyNameOutputValueLine%%=*}"
 
 		keyNameOutputRenameValue=$(_yaml_keys_names_outputs_values_rename_value "$keyNameOutputSearch" "$keysNamesOutputsRename")
 		if [ -n "$keyNameOutputRenameValue" ]; then
@@ -54,6 +40,21 @@ _yaml_keys_names_outputs_values_rename() {
 			echo "$keyNameOutputRenameValue=$keyNameOutputValue"
 		else
 			echo "$keyNameOutputValueLine"
+		fi
+	done
+}
+
+_yaml_keys_names_outputs_values_rename_value() {
+	local keyNameOutputSearch="$1"
+	local keysNamesOutputsRename="$2"
+
+	echo "$keysNamesOutputsRename" | while read -r keyNameOutputRenameLine; do
+		keyNameOutputRename="${keyNameOutputRenameLine%%=*}"
+
+		if [ "$keyNameOutputRename" = "$keyNameOutputSearch" ]; then
+			keyNameOutputRenameValue="${keyNameOutputRenameLine#*=}"
+			echo "$keyNameOutputRenameValue"
+			break
 		fi
 	done
 }
