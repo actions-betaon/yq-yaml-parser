@@ -75,7 +75,7 @@ jobs:
         id: action
         uses: ./
         with:
-          file-path: ./yq-test-action.yml
+          file-path: ./yq-test-action.yml          
 
   test-action-output-comment-line:
     name: GitHub Actions Test Output - Comment Line

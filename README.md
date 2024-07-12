@@ -1,4 +1,4 @@
-# yq YAML parser action
+# YAML parser action
 
 [![GitHub Super-Linter](https://github.com/actions-betaon/yq-yaml-parser/actions/workflows/linter.yml/badge.svg)](https://github.com/super-linter/super-linter)
 ![CI](https://github.com/actions-betaon/yq-yaml-parser/actions/workflows/ci.yml/badge.svg)
