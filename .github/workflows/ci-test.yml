@@ -93,7 +93,7 @@ jobs:
         run: |
           test_name="Test Output Multiline"
           expected="### Heading\n\n* Bullet C:\\\n* Driver D:\\\\\n* Points"
-          expected=$(printf '%s' "${expected_result}" | sed -e 's/\\n/\n/g')          
+          expected=$(printf '%s' "${expected}" | sed -e 's/\\n/\n/g')          
           .github/scripts/test-action-output.sh \
               "$test_name" \
               "$expected" \
