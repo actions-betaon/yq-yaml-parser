@@ -113,10 +113,10 @@ _key_value_to_multiline() {
 	local keyValue="$1"
 	local lineMark="#LN#"
 
-	keyValueMultiLine=$(echo "$keyValue" | sed "s/\\\\n/$lineMark/g")
-	keyValueMultiLine=$(echo "$keyValueMultiLine" | sed 's/\\/\\\\/g')
-	keyValueMultiLine=$(echo "$keyValueMultiLine" | sed "s/$lineMark/\n/g")
-	keyValueMultiLine=$(echo "$keyValueMultiLine" | sed '${/^$/d;}')
+	#keyValueMultiLine=$(echo "$keyValue" | sed "s/\\\\n/$lineMark/g")
+	keyValueMultiLine=$(echo "$keyValue" | sed 's/\\/\\\\/g')
+	#keyValueMultiLine=$(echo "$keyValueMultiLine" | sed "s/$lineMark/\n/g")
+	#keyValueMultiLine=$(echo "$keyValueMultiLine" | sed '${/^$/d;}')
 	echo "$keyValueMultiLine"
 }
 
@@ -135,7 +135,7 @@ _set_github_output() {
 		keyValueMultiLine=$(_key_value_to_multiline "$keyValue")
 		{
 			echo "$keyNameOutput<<EOF"
-			printf "%s\n" "$keyValue"
+			printf "%s\n" "$keyValueMultiLine"
 			echo "EOF"
 		} >>"$GITHUB_OUTPUT"
 	else
