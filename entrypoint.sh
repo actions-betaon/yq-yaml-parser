@@ -118,17 +118,18 @@ _set_github_output() {
 	local keyName="$2"
 	local keyNameOutput="$3"
 
-	KeyValue=$(_yaml_key_value "$yamlFile" "$keyName")
+	keyValue=$(_yaml_key_value "$yamlFile" "$keyName")
+	keyValueLineCount=$(echo "$keyValue" | wc -l)
 
-	if echo "$KeyValue" | grep -q '\\n'; then
-		keyValueMultiLine=$(_key_value_to_multiline "$KeyValue")
+	if [ $keyValueLineCount -gt 1 ]; then
+		keyValueMultiLine=$(_key_value_to_multiline "$keyValue")
 		{
 			echo "$keyNameOutput<<EOF"
-			printf "%b\n" "$keyValueMultiLine"
+			printf "%s\n" "$keyValue"
 			echo "EOF"
 		} >>"$GITHUB_OUTPUT"
 	else
-		echo "$keyNameOutput=$KeyValue" >>"$GITHUB_OUTPUT"
+		echo "$keyNameOutput=$keyValue" >>"$GITHUB_OUTPUT"
 	fi
 }
 
