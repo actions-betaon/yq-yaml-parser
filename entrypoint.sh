@@ -91,7 +91,7 @@ _replace_dots() {
 _key_name_output_value_to_multiline() {
 	local keyNameOutputValue="$1"
 	local lineMark="#LN#"
-    
+
 	keyNameOutputValueMultiline=$(echo "$keyNameOutputValue" | sed "s/\\\\n/$lineMark/g")
 	keyNameOutputValueMultiline=$(echo "$keyNameOutputValueMultiline" | sed 's/\\/\\\\/g')
 	keyNameOutputValueMultiline=$(echo "$keyNameOutputValueMultiline" | sed "s/$lineMark/\n/g")
@@ -99,12 +99,12 @@ _key_name_output_value_to_multiline() {
 	echo "$keyNameOutputValueMultiline"
 }
 
-_set_github_output() {	
+_set_github_output() {
 	local keyNameOutput="$1"
 	local keyNameOutputValue="$2"
-	
+
 	keyNameOutputValueEscapedLineCount=$(echo -e "$keyNameOutputValue" | wc -l)
-	
+
 	if [ $keyNameOutputValueEscapedLineCount -gt 1 ]; then
 		keyNameOutputValueMultiline=$(_key_name_output_value_to_multiline "$keyNameOutputValue")
 		{
