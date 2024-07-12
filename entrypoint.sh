@@ -7,12 +7,11 @@ _yaml_keys_names_outputs_values_default() {
 
 	properties=$(yq -o p --properties-separator "=" '... comments = ""' "$file")
 
-	keysNamesOutputsValues=""
 	echo "$properties" | while read -r propertyLine; do
 		keyName="${propertyLine%%=*}"
 		keyNameOutput=$(_replace_dots "$keyName" "$dotReplacement")
 		keyNameOutputValue="${propertyLine#*=}"
-		echo "${keysNamesOutputsValues:+$keysNamesOutputsValues$'\n'}$keyNameOutput=$keyNameOutputValue"
+		echo "$keyNameOutput=$keyNameOutputValue"
 	done
 }
 
@@ -20,45 +19,41 @@ _yaml_keys_names_outputs_values_filter() {
 	local keysNamesOutputsValues="$1"
 	local keysNamesOutputsFilter="$2"
 
-	keysNamesOutputsFiltered=""
-	echo "$keysNamesOutputsValues" | while read -r keyNameOutputLine; do
-		keyNameOutput="${keyNameOutputLine%%=*}"
+	echo "$keysNamesOutputsValues" | while read -r keyNameOutputValueLine; do
+		keyNameOutput="${keyNameOutputValueLine%%=*}"
 		if echo "$keysNamesOutputsFilter" | grep -Fxq -- "$keyNameOutput"; then
-			echo "${keysNamesOutputsFiltered:+$keysNamesOutputsFiltered$'\n'}$keyNameOutputLine"
+			echo "$keyNameOutputLine"
 		fi
 	done
 }
 
 _yaml_keys_names_outputs_values_rename() {
 	local keysNamesOutputsValues="$1"
-	local keysNamesOutputsRename="$2"
-	local dotReplacement="$3"
+	local keysNamesOutputsRename="$2"	
+	
+	echo "$keysNamesOutputsValues" | while read -r keyNameOutputValueLine; do
+		keyNameOutputSearch="${keyNameOutputValueLine%%=*}"
+		keyNameOutputValue="${keyNameOutputValueLine#*=}"
 
-	keysNamesOutputsRenamed=""
-	echo "$keysNamesOutputsValues" | while read -r keyNameOutputLine; do
-		keyNameOutputSearch="${keyNameOutputLine%%=*}"
-		keyNameOutputValue="${keyNameOutputLine#*=}"
-
-		keyNameOutputRenameValue=$(_yaml_keys_names_outputs_values_rename_value "$keyNameOutputSearch" "$keysNamesOutputsRename" "$dotReplacement")
+		keyNameOutputRenameValue=$(_yaml_keys_names_outputs_values_rename_value "$keyNameOutputSearch" "$keysNamesOutputsRename")
 		keyNameOutput=${keyNameOutputRenameValue:-$keyNameOutputSearch}
-		echo "${keysNamesOutputsRenamed:+$keysNamesOutputsRenamed$'\n'}$keyNameOutput=$keyNameOutputValue"
+		echo "$keyNameOutput=$keyNameOutputValue"
 	done
 }
 
-_yaml_keys_names_outputs_values_rename_value() {
-	local keyNameOutputSearch="$1"
-	local keysNamesOutputsRename="$2"
-	local dotReplacement="$3"
+_yaml_keys_names_outputs_values_rename() {
+	local keysNamesOutputsValues="$1"
+	local keysNamesOutputsRename="$2"	
+	
+	echo "$keysNamesOutputsValues" | while read -r keyNameOutputValueLine; do
+		keyNameOutputSearch="${keyNameOutputValueLine%%=*}"		
 
-	keysNamesOutputsRenamed=""
-	echo "$keysNamesOutputsRename" | while read -r keyNameOutputRenameLine; do
-		keyNameOutputRename="${keyNameOutputRenameLine%%=*}"
-		keyNameOutputRenameValue="${keyNameOutputRenameLine#*=}"
-
-		if [ "$keyNameOutputRename" = "$keyNameOutputSearch" ]; then
-			keyNameOutputRenamed=$(_replace_dots "$keyNameOutputRenameValue" "$dotReplacement")
-			echo "$keyNameOutputRenamed"
-			break
+		keyNameOutputRenameValue=$(_yaml_keys_names_outputs_values_rename_value "$keyNameOutputSearch" "$keysNamesOutputsRename")		
+		if [ -n "$keyNameOutputRenameValue" ]; then		     
+			keyNameOutputValue="${keyNameOutputValueLine#*=}"
+			echo "$keyNameOutputRenameValue=$keyNameOutputValue"
+		else
+			echo "$keyNameOutputValueLine"
 		fi
 	done
 }
@@ -88,32 +83,20 @@ _replace_dots() {
 	echo "${string}" | sed "s/\./${replacement}/g"
 }
 
-_key_name_output_value_to_multiline() {
-	local keyNameOutputValue="$1"
-	local lineMark="#LN#"
-
-	keyNameOutputValueMultiline=$(echo "$keyNameOutputValue" | sed "s/\\\\n/$lineMark/g")
-	keyNameOutputValueMultiline=$(echo "$keyNameOutputValueMultiline" | sed 's/\\/\\\\/g')
-	keyNameOutputValueMultiline=$(echo "$keyNameOutputValueMultiline" | sed "s/$lineMark/\n/g")
-	#keyNameOutputValueMultiline=$(echo "$propertyValueMultiLine" | sed '${/^$/d;}')
-	echo "$keyNameOutputValueMultiline"
-}
-
 _set_github_output() {
 	local keyNameOutput="$1"
 	local keyNameOutputValue="$2"
 
-	keyNameOutputValueLineCount=$(echo -e "$keyNameOutputValue" | wc -l)
-
-	if [ $keyNameOutputValueLineCount -gt 1 ]; then
-		keyNameOutputValueMultiline=$(_key_name_output_value_to_multiline "$keyNameOutputValue")
+	keyNameOutputValueGitHubOutput=$(printf '%s' "${keyNameOutputValue}" | sed -e 's/\\n/\n/g')
+	keyNameOutputValueGitHubOutputLineCount=$(echo "$keyNameOutputValueGitHubOutput" | wc -l)
+	if [ $keyNameOutputValueGitHubOutputLineCount -gt 1 ]; then
 		{
 			echo "$keyNameOutput<<EOF"
-			echo -e "$keyNameOutputValueMultiline"
+			printf '%s\n' "$keyNameOutputValueGitHubOutput"
 			echo "EOF"
 		} >>"$GITHUB_OUTPUT"
 	else
-		echo "$keyNameOutput=$keyNameOutputValue" >>"$GITHUB_OUTPUT"
+		echo "$keyNameOutput=$keyNameOutputValueGitHubOutput" >>"$GITHUB_OUTPUT"
 	fi
 }
 
@@ -124,7 +107,7 @@ _set_github_outputs() {
 	local dotReplacement="$4"
 
 	keysNamesOutputsValues=$(_yaml_keys_names_outputs_values "$yamlFile" "$filteringKeys" "$renamingOutputs" "$dotReplacement")
-	
+
 	echo "$keysNamesOutputsValues" | while read -r keyNameOutputValueLine; do
 		keyNameOutput="${keyNameOutputValueLine%%=*}"
 		keyNameOutputValue="${keyNameOutputValueLine#*=}"
