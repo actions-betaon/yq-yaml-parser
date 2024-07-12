@@ -103,9 +103,9 @@ _set_github_output() {
 	local keyNameOutput="$1"
 	local keyNameOutputValue="$2"
 
-	keyNameOutputValueEscapedLineCount=$(echo -e "$keyNameOutputValue" | wc -l)
+	keyNameOutputValueLineCount=$(echo -e "$keyNameOutputValue" | wc -l)
 
-	if [ $keyNameOutputValueEscapedLineCount -gt 1 ]; then
+	if [ $keyNameOutputValueLineCount -gt 1 ]; then
 		keyNameOutputValueMultiline=$(_key_name_output_value_to_multiline "$keyNameOutputValue")
 		{
 			echo "$keyNameOutput<<EOF"
@@ -124,9 +124,7 @@ _set_github_outputs() {
 	local dotReplacement="$4"
 
 	keysNamesOutputsValues=$(_yaml_keys_names_outputs_values "$yamlFile" "$filteringKeys" "$renamingOutputs" "$dotReplacement")
-	echo "Keys names outputs:"
-	echo "$keysNamesOutputsValues"
-
+	
 	echo "$keysNamesOutputsValues" | while read -r keyNameOutputValueLine; do
 		keyNameOutput="${keyNameOutputValueLine%%=*}"
 		keyNameOutputValue="${keyNameOutputValueLine#*=}"
