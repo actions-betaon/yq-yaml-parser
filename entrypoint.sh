@@ -121,6 +121,9 @@ _set_github_output() {
 	keyValue=$(_yaml_key_value "$yamlFile" "$keyName")
 	keyValueLineCount=$(echo "$keyValue" | wc -l)
 
+    echo "Setting output $keyNameOutput"
+	echo "Setting value $keyValue"
+
 	if [ $keyValueLineCount -gt 1 ]; then
 		keyValueMultiLine=$(_key_value_to_multiline "$keyValue")
 		{
