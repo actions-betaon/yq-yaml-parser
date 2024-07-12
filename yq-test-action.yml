@@ -1,9 +1,11 @@
 test-action:
   # comment
-  comment-line: ./app = #comment line  
+  comment-line: ./app = #comment line
+  to-dont-read: this is not read
+  to-rename: this is will be renamed
   multiline: |
     ### Heading
 
-    * Bullet C:\\ E:\
-    * Driver D:\
+    * Bullet C:\
+    * Driver D:\\
     * Points
