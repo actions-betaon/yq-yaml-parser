@@ -1,0 +1,68 @@
+name: Test Action
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main      
+
+permissions:
+  contents: read
+
+jobs:
+  test-action:
+    name: GitHub Actions Test Output
+    runs-on: ubuntu-latest
+
+    outputs:
+      comment-line: ${{ steps.action.outputs.test-action_comment-line }}
+      multiline: ${{ steps.action.outputs.test-action_multiline }}
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Test Action
+        id: action
+        uses: ./
+        with:
+          file-path: ./yq-test-action.yml          
+
+  test-action-output-comment-line:
+    name: GitHub Actions Test Output - Comment Line
+    needs: test-action
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Test Output Comment Line
+        id: test-output-comment-line
+        run: |
+          test_name="Test Output Comment Line"
+          expected_result="./app ="
+          .github/scripts/test-action-output.sh \
+              "$test_name" \
+              "$expected_result" \
+              "${{ needs.test-action.outputs.comment-line }}"
+
+  test-action-output-multiline:
+    name: GitHub Actions Test Output - Multiline
+    needs: test-action
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Test Output Multiline
+        id: test-output-multiline
+        run: |
+          test_name="Test Output Multiline"
+          expected_result=$(printf "%b" "### Heading\n\n* Bullet C:\\\\\\\\ E:\\\\\n* Driver D:\\\\\n* Points")
+          .github/scripts/test-action-output.sh "$test_name" "$expected_result" "${{ needs.test-action.outputs.multiline }}"
