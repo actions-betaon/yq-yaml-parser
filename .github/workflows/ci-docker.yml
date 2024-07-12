@@ -53,9 +53,10 @@ jobs:
         run: |
           docker run \
             --workdir /github/workspace \
-            --volume "${{ github.workspace }}":/github/workspace \
-            --volume "${{ runner.temp }}/_runner_file_commands":${{ runner.temp }}/_runner_file_commands \
+            --volume "${{ github.workspace }}":/github/workspace \            
             --env GITHUB_OUTPUT="/github/workspace/github_output.txt" \
             --env INPUT_YAML_FILE_PATH="${{ env.INPUT_YAML_FILE_PATH }}" \
             --rm ${{ env.TEST_TAG }}
-          cat ${{ github.workspace }}/github_output.txt            
+          echo ""    
+          echo "Run Output:"
+          cat ${{ github.workspace }}/github_output.txt
