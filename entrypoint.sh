@@ -22,7 +22,7 @@ _yaml_keys_names_outputs_values_filter() {
 	echo "$keysNamesOutputsValues" | while read -r keyNameOutputValueLine; do
 		keyNameOutput="${keyNameOutputValueLine%%=*}"
 		if echo "$keysNamesOutputsFilter" | grep -Fxq -- "$keyNameOutput"; then
-			echo "$keyNameOutputLine"
+			echo "$keyNameOutputValueLine"
 		fi
 	done
 }
@@ -90,7 +90,7 @@ _set_github_output() {
 
 	keyNameOutputValueGitHubOutput=$(printf '%s' "${keyNameOutputValue}" | sed -e 's/\\n/\n/g')
 	keyNameOutputValueGitHubOutputLineCount=$(echo "$keyNameOutputValueGitHubOutput" | wc -l)
-	if [ $keyNameOutputValueGitHubOutputLineCount -gt 1 ]; then
+	if [ "$keyNameOutputValueGitHubOutputLineCount" -gt 1 ]; then
 		{
 			echo "$keyNameOutput<<EOF"
 			printf '%s\n' "$keyNameOutputValueGitHubOutput"
