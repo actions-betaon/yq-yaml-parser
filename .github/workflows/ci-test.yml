@@ -1,4 +1,4 @@
-name: Test Action
+name: Continuous Integration - Test Action
 
 on:
   pull_request:
@@ -6,7 +6,8 @@ on:
       - main
   push:
     branches:
-      - main      
+      - main
+      - feature/**
 
 permissions:
   contents: read
@@ -28,7 +29,7 @@ jobs:
         id: action
         uses: ./
         with:
-          file-path: ./yq-test-action.yml          
+          file-path: ./yq-test-action.yml
 
   test-action-output-comment-line:
     name: GitHub Actions Test Output - Comment Line
@@ -64,5 +65,9 @@ jobs:
         id: test-output-multiline
         run: |
           test_name="Test Output Multiline"
-          expected_result=$(printf "%b" "### Heading\n\n* Bullet C:\\\\\\\\ E:\\\\\n* Driver D:\\\\\n* Points")
-          .github/scripts/test-action-output.sh "$test_name" "$expected_result" "${{ needs.test-action.outputs.multiline }}"
+          expected_result="### Heading\n\n* Bullet C:\\\\ E:\\\n* Driver D:\\\n* Points"
+          expected_result=$(printf '%s' "${expected_result}" | sed -e 's/\\n/\n/g')          
+          .github/scripts/test-action-output.sh \
+              "$test_name" \
+              "$expected_result" \
+              "${{ needs.test-action.outputs.multiline }}"
