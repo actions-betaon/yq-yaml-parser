@@ -84,10 +84,17 @@ _yaml_keys_names_outputs() {
 	local renamingOutptus="$3"
 	local dotReplacement="$4"
 
-	keysNamesOutputsDefault=$(_yaml_keys_names_outputs_default "$file" "$dotReplacement")
-	keysNamesOutputsFilter=$(_yaml_keys_names_outputs_filter "$keysNamesOutputsDefault" "$filteringKeys")
-	keysNamesOutputs=$(_yaml_keys_names_outputs_rename "$keysNamesOutputsFilter" "$renamingOutptus" "$dotReplacement")
-	echo "$keysNamesOutputs"
+	keysNamesOutputsResult=$(_yaml_keys_names_outputs_default "$file" "$dotReplacement")
+	
+	if [ -n "$filteringKeys" ]; then
+        keysNamesOutputsResult=$(_yaml_keys_names_outputs_filter "$keysNamesOutputsResult" "$filteringKeys")	
+    fi
+	
+	if [ -n "$renamingOutptus" ]; then
+        keysNamesOutputsResult=$(_yaml_keys_names_outputs_rename "$keysNamesOutputsFilter" "$renamingOutptus" "$dotReplacement")
+    fi
+	
+	echo "$keysNamesOutputsResult"
 }
 
 _yaml_key_value() {
