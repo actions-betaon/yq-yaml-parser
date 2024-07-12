@@ -143,6 +143,8 @@ _set_github_outputs() {
 	local dotReplacement="$4"
 
 	keysNamesOutputs=$(_yaml_keys_names_outputs "$yamlFile" "$filteringKeys" "$renamingOutputs" "$dotReplacement")
+	echo "Keys names outputs:"
+	echo "$keysNamesOutputs"
 
 	echo "$keysNamesOutputs" | while read -r keyNameOutputLine; do
 		keyName="${keyNameOutputLine%%=*}"
