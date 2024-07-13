@@ -12,7 +12,7 @@ inputs:
     required: true
   filtering-keys:
     description: |
-      Read using specific keys.      
+      Read using specific keys
         filtering-keys: |
           key1_nested
           key2_nested_0      
@@ -20,7 +20,7 @@ inputs:
     required: false
   renaming-outputs:
     description: |      
-      Can be used to rename the default output name.       
+      Can be used to rename the default output name
         renaming-outputs: |
           key1_nested=my_output
           key2_nested_0=my_output_2                      
