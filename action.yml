@@ -13,7 +13,7 @@ inputs:
   filtering-keys:
     description: |
       Read using specific keys
-        filtering-keys: |
+        filtering-keys: |          
           key1_nested
           key2_nested_0      
       If not provided, all keys will be read

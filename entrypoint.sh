@@ -14,8 +14,22 @@ _yaml_keys_names_outputs_values_default() {
 		echo "$keyNameOutput=$keyNameOutputValue"
 	done
 }
+_yaml_keys_names_outputs_values_filter_grep() {
+	local keysNamesOutputsValues="$1"
+	local keysNamesOutputsFilter="$2"
 
-_yaml_keys_names_outputs_values_filter() {
+	echo "$keysNamesOutputsValues" | while IFS= read -r keyNameOutputValueLine; do
+		keyNameOutput="${keyNameOutputValueLine%%=*}"
+		echo "$keysNamesOutputsFilter" | while IFS= read -r regex; do
+			if echo "$keyNameOutput" | grep -Eq -- "$regex"; then
+				echo "$keyNameOutputValueLine"
+				break 2
+			fi
+		done
+	done
+}
+
+_yaml_keys_names_outputs_values_filter_wk() {
 	local keysNamesOutputsValues="$1"
 	local keysNamesOutputsFilter="$2"
 
@@ -25,6 +39,60 @@ _yaml_keys_names_outputs_values_filter() {
 			echo "$keyNameOutputValueLine"
 		fi
 	done
+}
+
+_yaml_keys_names_outputs_values_filter() {
+	local keysNamesOutputsValues="$1"
+	local keysNamesOutputsFilter="$2"
+
+	keysNamesOutputsFilterInclude=$(echo "$keysNamesOutputsFilter" | grep -v '^[!+\-]' | grep '^.')
+	keysNamesOutputsFilterExclude=$(echo "$keysNamesOutputsFilter" | grep '^!' | cut -d'!' -f2 | grep '^.')
+	keysNamesOutputsFilterRegexInclude=$(echo "$keysNamesOutputsFilter" | grep '^+' | cut -d'+' -f2 | grep '^.')
+	keysNamesOutputsFilterRegexExclude=$(echo "$keysNamesOutputsFilter" | grep '^-' | cut -d'-' -f2 | grep '^.')
+
+    keysNamesOutputsValuesFiltered="$keysNamesOutputsValues"
+
+	if [ -n "$keysNamesOutputsFilterInclude" ]; then
+		keysNamesOutputsValuesFiltered=$(_yaml_keys_names_outputs_values_filter_include "$keysNamesOutputsValues" "$keysNamesOutputsFilterInclude")
+	fi
+    
+	if [ -n "$keysNamesOutputsFilterExclude" ]; then
+		keysNamesOutputsValuesFiltered=$(_yaml_keys_names_outputs_values_filter_exclude "$keysNamesOutputsValues" "$keysNamesOutputsFilterExclude")
+	fi	
+
+    echo "$keysNamesOutputsValuesFiltered"
+}
+
+_yaml_keys_names_outputs_values_filter_include() {
+	local keysNamesOutputsValues="$1"
+	local keysNamesOutputsFilter="$2"
+
+	echo "$keysNamesOutputsValues" | while read -r keyNameOutputValueLine; do
+		keyNameOutput="${keyNameOutputValueLine%%=*}"
+		if echo "$keysNamesOutputsFilter" | grep -Fxq -- "$keyNameOutput"; then
+			echo "$keyNameOutputValueLine"
+		fi
+	done
+}
+
+_yaml_keys_names_outputs_values_filter_exclude() {
+	local keysNamesOutputsValues="$1"
+	local keysNamesOutputsFilter="$2"
+
+	echo "$keysNamesOutputsValues" | while read -r keyNameOutputValueLine; do
+		keyNameOutput="${keyNameOutputValueLine%%=*}"
+		if ! echo "$keysNamesOutputsFilter" | grep -Fxq -- "$keyNameOutput"; then
+			echo "$keyNameOutputValueLine"
+		fi
+	done
+}
+
+_yaml_keys_names_outputs_values_filter_extract() {
+	local regexStartPattern="$1"
+	local keysNamesOutputsFilter="$2"
+
+	keysNamesOutputsFilterRegex=$(echo "$keysNamesOutputsFilter" | grep "^$regexStartPattern" | cut -d"$regexStartPattern" -f2)
+
 }
 
 _yaml_keys_names_outputs_values_rename() {
