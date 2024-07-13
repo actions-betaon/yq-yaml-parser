@@ -1,9 +1,81 @@
 #!/bin/ash -l
 # shellcheck shell=dash
 
-_yaml_to_properties() {
-	local yaml_file="$1"
-	yq -o p --properties-separator '=' '... comments = ""' "$yaml_file"
+_yaml_keys_names_outputs_values_default() {
+	local file="$1"
+	local dotReplacement="$2"
+
+	properties=$(yq -o p --properties-separator "=" '... comments = ""' "$file")
+
+	echo "$properties" | while read -r propertyLine; do
+		keyName="${propertyLine%%=*}"
+		keyNameOutput=$(_replace_dots "$keyName" "$dotReplacement")
+		keyNameOutputValue="${propertyLine#*=}"
+		echo "$keyNameOutput=$keyNameOutputValue"
+	done
+}
+
+_yaml_keys_names_outputs_values_filter() {
+	local keysNamesOutputsValues="$1"
+	local keysNamesOutputsFilter="$2"
+
+	echo "$keysNamesOutputsValues" | while read -r keyNameOutputValueLine; do
+		keyNameOutput="${keyNameOutputValueLine%%=*}"
+		if echo "$keysNamesOutputsFilter" | grep -Fxq -- "$keyNameOutput"; then
+			echo "$keyNameOutputValueLine"
+		fi
+	done
+}
+
+_yaml_keys_names_outputs_values_rename() {
+	local keysNamesOutputsValues="$1"
+	local keysNamesOutputsRename="$2"
+
+	echo "$keysNamesOutputsValues" | while read -r keyNameOutputValueLine; do
+		keyNameOutputSearch="${keyNameOutputValueLine%%=*}"
+
+		keyNameOutputRenameValue=$(_yaml_keys_names_outputs_values_rename_value "$keyNameOutputSearch" "$keysNamesOutputsRename")
+		if [ -n "$keyNameOutputRenameValue" ]; then
+			keyNameOutputValue="${keyNameOutputValueLine#*=}"
+			echo "$keyNameOutputRenameValue=$keyNameOutputValue"
+		else
+			echo "$keyNameOutputValueLine"
+		fi
+	done
+}
+
+_yaml_keys_names_outputs_values_rename_value() {
+	local keyNameOutputSearch="$1"
+	local keysNamesOutputsRename="$2"
+
+	echo "$keysNamesOutputsRename" | while read -r keyNameOutputRenameLine; do
+		keyNameOutputRename="${keyNameOutputRenameLine%%=*}"
+
+		if [ "$keyNameOutputRename" = "$keyNameOutputSearch" ]; then
+			keyNameOutputRenameValue="${keyNameOutputRenameLine#*=}"
+			echo "$keyNameOutputRenameValue"
+			break
+		fi
+	done
+}
+
+_yaml_keys_names_outputs_values() {
+	local file="$1"
+	local filteringKeys="$2"
+	local renamingOutptus="$3"
+	local dotReplacement="$4"
+
+	keysNamesValuesOutputsResult=$(_yaml_keys_names_outputs_values_default "$file" "$dotReplacement")
+
+	if [ -n "$filteringKeys" ]; then
+		keysNamesValuesOutputsResult=$(_yaml_keys_names_outputs_values_filter "$keysNamesValuesOutputsResult" "$filteringKeys")
+	fi
+
+	if [ -n "$renamingOutptus" ]; then
+		keysNamesValuesOutputsResult=$(_yaml_keys_names_outputs_values_rename "$keysNamesValuesOutputsResult" "$renamingOutptus" "$dotReplacement")
+	fi
+
+	echo "$keysNamesValuesOutputsResult"
 }
 
 _replace_dots() {
@@ -12,49 +84,46 @@ _replace_dots() {
 	echo "${string}" | sed "s/\./${replacement}/g"
 }
 
-_property_value_to_multiline() {
-	local propertyValue="$1"
-	local lineMark="#LN#"
-
-	propertyValueMultiLine=$(echo "$propertyValue" | sed "s/\\\\n/$lineMark/g")
-	propertyValueMultiLine=$(echo "$propertyValueMultiLine" | sed 's/\\/\\\\/g')
-	propertyValueMultiLine=$(echo "$propertyValueMultiLine" | sed "s/$lineMark/\n/g")
-	propertyValueMultiLine=$(echo "$propertyValueMultiLine" | sed '${/^$/d;}')
-	echo "$propertyValueMultiLine"
-}
-
 _set_github_output() {
-	local propertyName="$1"
-	local propertyValue="$2"
+	local keyNameOutput="$1"
+	local keyNameOutputValue="$2"
 
-	if echo "$propertyValue" | grep -q '\\n'; then
-		propertyValueMultiLine=$(_property_value_to_multiline "$propertyValue")
+	keyNameOutputValueGitHubOutput=$(printf '%s' "${keyNameOutputValue}" | sed -e 's/\\n/\n/g')
+	keyNameOutputValueGitHubOutputLineCount=$(echo "$keyNameOutputValueGitHubOutput" | wc -l)
+	if [ "$keyNameOutputValueGitHubOutputLineCount" -gt 1 ]; then
 		{
-			echo "$propertyName<<EOF"
-			printf "%b\n" "$propertyValueMultiLine"
+			echo "$keyNameOutput<<EOF"
+			printf '%s\n' "$keyNameOutputValueGitHubOutput"
 			echo "EOF"
 		} >>"$GITHUB_OUTPUT"
 	else
-		echo "$propertyName=$propertyValue" >>"$GITHUB_OUTPUT"
+		echo "$keyNameOutput=$keyNameOutputValueGitHubOutput" >>"$GITHUB_OUTPUT"
 	fi
 }
 
 _set_github_outputs() {
-	local properties="$1"
-	local propertyNameDotReplace="$2"
+	local yamlFile="$1"
+	local filteringKeys="$2"
+	local renamingOutputs="$3"
+	local dotReplacement="$4"
 
-	echo "$properties" | while read -r propertyLine; do
-		propertyName=$(_replace_dots "${propertyLine%%=*}" "$propertyNameDotReplace")
-		propertyValue="${propertyLine#*=}"
-		_set_github_output "$propertyName" "$propertyValue"
+	keysNamesOutputsValues=$(_yaml_keys_names_outputs_values "$yamlFile" "$filteringKeys" "$renamingOutputs" "$dotReplacement")
+
+	echo "$keysNamesOutputsValues" | while read -r keyNameOutputValueLine; do
+		keyNameOutput="${keyNameOutputValueLine%%=*}"
+		keyNameOutputValue="${keyNameOutputValueLine#*=}"
+		_set_github_output "$keyNameOutput" "$keyNameOutputValue"
 	done
 }
 
 set -e
 
-_propertyNameDotReplace="_"
-_yqProperties=$(_yaml_to_properties "$INPUT_YAML_FILE_PATH")
+_dotReplacement="_"
 
-_set_github_outputs "$_yqProperties" "$_propertyNameDotReplace"
+_set_github_outputs \
+	"$INPUT_YAML_FILE_PATH" \
+	"$INPUT_YAML_FILTERING_KEYS" \
+	"$INPUT_YAML_RENAMING_OUTPUTS" \
+	"$_dotReplacement"
 
 exit 0

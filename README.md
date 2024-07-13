@@ -1,11 +1,10 @@
-# yq YAML parser action
+# YAML parser action
 
 [![GitHub Super-Linter](https://github.com/actions-betaon/yq-yaml-parser/actions/workflows/linter.yml/badge.svg)](https://github.com/super-linter/super-linter)
-![CI](https://github.com/actions-betaon/yq-yaml-parser/actions/workflows/ci.yml/badge.svg)
+![CI Docker](https://github.com/actions-betaon/yq-yaml-parser/actions/workflows/ci-docker.yml/badge.svg)
+![CI Test](https://github.com/actions-betaon/yq-yaml-parser/actions/workflows/ci-test.yml/badge.svg)
 
 This action reads values from a YAML file setting as action outputs.
-
-To learn how this action was built, see [Creating a Docker container action](https://docs.github.com/en/actions/creating-actions/creating-a-docker-container-action).
 
 ## Usage
 
@@ -21,6 +20,14 @@ on:
         description: "Path to the yaml file to parser"
         required: true
         type: string
+      yaml-filtering-keys:
+        description: "Read using specific keys"
+        required: false
+        type: string
+      yaml-renaming-outputs:
+        description: "Used to rename the default output name"
+        required: false
+        type: string        
 
 jobs:
   yq-yaml-parser:
@@ -33,13 +40,17 @@ jobs:
         uses: actions-betaon/yq-yaml-parser@v1.0.0
         with:
           file-path: '${{ inputs.yaml-file-path }}'
+          filtering-keys: '${{ inputs.yaml-filtering-keys }}'
+          renaming-outputs: '${{ inputs.yaml-renaming-outputs }}'
 ```
 
 ## Inputs
 
-| Input       | Description                     | Default |
+| Input       | Description                     | Required |
 | ----------- | ------------------------------- | ----------- |
-| `file-path` | Path to the YAML file to parse as output | |
+| `file-path` | Path to the YAML file to parse as output | true |
+| `filtering-keys` | The YAML key names list to filter as read | false |
+| `renaming-outputs` | The YAML rename "keyname=output" output list | false |
 
 ## Outputs
 
