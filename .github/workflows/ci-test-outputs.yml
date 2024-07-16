@@ -1,0 +1,112 @@
+name: Continuous Integration - Test Outputs
+
+on:
+  workflow_call:
+
+jobs:
+  test-action:
+    name: Action Test Output
+    runs-on: ubuntu-latest
+
+    outputs:
+      comment-line: ${{ steps.action.outputs.test-action_comment-line }}
+      renamed: ${{ steps.action.outputs.test-test-action_renamed }}
+      multiline: ${{ steps.action.outputs.test-action_multiline }}
+      noreading: ${{ steps.action.outputs.test-action_to-dont-read }}
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Test Action
+        id: action
+        uses: ./
+        with:
+          file-path: .github/workflows-tests/yq-test-action.yml
+          filtering-keys: |
+            test-action_comment-line
+            test-action_to-rename
+            test-action_multiline
+          renaming-outputs: |
+            test-action_to-rename=test-action_renamed
+
+  test-action-output-comment-line:
+    name: Action Test Output - Comment Line
+    needs: test-action
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Test Output Comment Line
+        id: test-output-comment-line
+        run: |
+          test_name="Test Output Comment Line"
+          expected="./app ="
+          .github/scripts/test-action-output.sh \
+              "$test_name" \
+              "$expected" \
+              "${{ needs.test-action.outputs.comment-line }}"
+
+  test-action-output-rename:
+    name: Action Test Output - Rename
+    needs: test-action
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Test Output Comment Line
+        id: test-output-comment-line
+        run: |
+          test_name="Test Output Rename"
+          expected="this is will be renamed"
+          .github/scripts/test-action-output.sh \
+              "$test_name" \
+              "$expected" \
+              "${{ needs.test-action.outputs.renamed }}"
+
+  test-action-output-dont-read:
+    name: Action Test Output - Don't Read
+    needs: test-action
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Test Output Don't Read
+        id: test-output-dont-read
+        run: |
+          test_name="Test Output Don't Read"
+          expected=''
+          .github/scripts/test-action-output.sh \
+              "$test_name" \
+              "$expected" \
+              "${{ needs.test-action.outputs.noreading }}"
+
+  test-action-output-multiline:
+    name: Action Test Output - Multiline
+    needs: test-action
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Test Output Multiline
+        id: test-output-multiline
+        run: |
+          test_name="Test Output Multiline"
+          expected="### Heading\n\n* Bullet C:\\\n* Driver D:\\\\\n* Points"
+          expected=$(printf '%s' "${expected}" | sed -e 's/\\n/\n/g')          
+          .github/scripts/test-action-output.sh \
+              "$test_name" \
+              "$expected" \
+              "${{ needs.test-action.outputs.multiline }}"
