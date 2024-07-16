@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   test-action-filter-include:
-    name: Action Test Filter - Include    
+    name: Action Test Filter - Include
     runs-on: ubuntu-latest
 
     steps:
@@ -23,10 +23,11 @@ jobs:
           file-path: .github/tests/action-output-filter.yml
           filtering-keys: |
             test-action_another-value
-            test-action_specific-value            
+            test-action_specific-value
 
       - name: Test Output Comment Line
         id: test-output-comment-line
         run: |
-          outputs_list=$(echo "${{ toJson(steps.action.outputs) }}" | jq -r 'keys[]')
+          echo "${{ toJson(steps.action.outputs) }}"
+          #outputs_list=$(echo "${{ toJson(steps.action.outputs) }}" | jq -r 'keys[]')
           echo "Outputs: $outputs_list"
