@@ -31,5 +31,5 @@ jobs:
           outputs_json="${{ toJson(steps.action.outputs) }}"
           echo "$outputs_json"
           echo "outputs_list"
-          outputs_list=$(echo "$outputs_json" | jq -r 'keys[]')
+          echo "$outputs_json" | jq -r 'keys[]'
           echo "Outputs: $outputs_list"
