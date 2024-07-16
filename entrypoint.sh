@@ -1,5 +1,5 @@
 #!/bin/ash -l
-# shellcheck shell=dash
+# shellcheck shell=dash disable=SC3001
 
 _boolean_eval() {
 	[ "$1" = true ] && echo true || echo false
