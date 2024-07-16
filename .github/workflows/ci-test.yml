@@ -14,5 +14,4 @@ permissions:
 jobs:
   test-action-outputs:
     name: Test Action Outputs
-    uses: ./.github/workflows/ci-test-outputs.yml    
-    
+    uses: ./.github/workflows/ci-test-outputs.yml

@@ -3,14 +3,17 @@ name: Continuous Integration - Test Outputs
 on:
   workflow_call:
 
+permissions:
+  contents: read
+
 jobs:
   test-action:
-    name: Action Test Output
+    name: Action Test Output - Run Action
     runs-on: ubuntu-latest
 
     outputs:
       comment-line: ${{ steps.action.outputs.test-action_comment-line }}
-      renamed: ${{ steps.action.outputs.test-test-action_renamed }}
+      renamed: ${{ steps.action.outputs.test-action_renamed }}
       multiline: ${{ steps.action.outputs.test-action_multiline }}
       noreading: ${{ steps.action.outputs.test-action_to-dont-read }}
     steps:
@@ -22,7 +25,7 @@ jobs:
         id: action
         uses: ./
         with:
-          file-path: .github/workflows-tests/yq-test-action.yml
+          file-path: .github/tests/yq-test-action.yml
           filtering-keys: |
             test-action_comment-line
             test-action_to-rename
