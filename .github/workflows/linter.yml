@@ -32,5 +32,4 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_ALL_CODEBASE: true
-          GITHUB_ACTIONS_COMMAND_ARGS: |
-            -ignore 'property "test-.+" is not defined in object type'
+          GITHUB_ACTIONS_COMMAND_ARGS: -ignore 'property "test-.+" is not defined in object type'
