@@ -28,6 +28,10 @@ jobs:
       - name: Test Output Comment Line
         id: test-output-comment-line
         run: |
+          echo "${{ toJson(steps.action.outputs) }}"
+          echo '${{ toJson(steps.action.outputs) }}'
+          echo ${{ toJson(steps.action.outputs) }}
+
           outputs_json="${{ toJson(steps.action.outputs) }}"
           echo "$outputs_json"
           echo "outputs_list"
