@@ -21,12 +21,12 @@ _keys_names_outputs_values_all() {
 
 	properties=$(yq -o p --properties-separator "=" '... comments = ""' "$file")
 
-	echo "$properties" | while read -r propertyLine; do
+	while IFS= read -r propertyLine; do
 		keyName="${propertyLine%%=*}"
 		keyNameOutput=$(_replace_dots "$keyName" "$dotReplacement")
 		keyNameOutputValue="${propertyLine#*=}"
 		echo "$keyNameOutput=$keyNameOutputValue"
-	done
+	done < <(echo "$properties")
 }
 
 _keys_names_outputs_values_filter() {
@@ -106,7 +106,7 @@ _keys_names_outputs_values_rename() {
 	local keysNamesOutputsValues="$1"
 	local keysNamesOutputsRename="$2"
 
-	echo "$keysNamesOutputsValues" | while read -r keyNameOutputValueLine; do
+	while IFS= read -r keyNameOutputValueLine; do
 		keyNameOutputSearch="${keyNameOutputValueLine%%=*}"
 
 		keyNameOutputRenameValue=$(_keys_names_outputs_values_rename_value "$keyNameOutputSearch" "$keysNamesOutputsRename")
@@ -116,14 +116,14 @@ _keys_names_outputs_values_rename() {
 		else
 			echo "$keyNameOutputValueLine"
 		fi
-	done
+	done < <(echo "$keysNamesOutputsValues")
 }
 
 _keys_names_outputs_values_rename_value() {
 	local keyNameOutputSearch="$1"
 	local keysNamesOutputsRename="$2"
 
-	echo "$keysNamesOutputsRename" | while read -r keyNameOutputRenameLine; do
+	while read -r keyNameOutputRenameLine; do
 		keyNameOutputRename="${keyNameOutputRenameLine%%=*}"
 
 		if [ "$keyNameOutputRename" = "$keyNameOutputSearch" ]; then
@@ -131,7 +131,7 @@ _keys_names_outputs_values_rename_value() {
 			echo "$keyNameOutputRenameValue"
 			break
 		fi
-	done
+	done < <(echo "$keysNamesOutputsRename")
 }
 
 _keys_names_outputs_values() {
@@ -166,7 +166,7 @@ _set_github_output() {
 			echo "EOF"
 		} >>"$GITHUB_OUTPUT"
 	else
-		echo "$key=$valueGitHubOutput"
+		echo "$key=$valueGitHubOutput" >>"$GITHUB_OUTPUT"
 	fi
 }
 
@@ -178,11 +178,11 @@ _set_github_outputs() {
 
 	keysNamesOutputsValues=$(_keys_names_outputs_values "$yamlFile" "$filteringKeys" "$renamingOutputs" "$dotReplacement")
 
-	echo "$keysNamesOutputsValues" | while read -r keyNameOutputValueLine; do
+	while IFS= read -r keyNameOutputValueLine; do
 		keyNameOutput="${keyNameOutputValueLine%%=*}"
 		keyNameOutputValue="${keyNameOutputValueLine#*=}"
 		_set_github_output "$keyNameOutput" "$keyNameOutputValue"
-	done
+	done < <(echo "$keysNamesOutputsValues")
 }
 
 set -e
