@@ -1,6 +1,24 @@
 #!/bin/ash -l
 # shellcheck shell=dash
 
+_boolean_eval() {
+	local boolean="$1"
+	if [ "$boolean" = true ]; then
+		echo true
+	else
+		echo false
+	fi
+}
+
+_boolean_invert() {
+	local boolean=$(_boolean_eval "$1")
+	if [ "$boolean" = true ]; then
+		echo false
+	else
+		echo true
+	fi
+}
+
 _yaml_keys_names_outputs_values_default() {
 	local file="$1"
 	local dotReplacement="$2"
@@ -50,49 +68,68 @@ _yaml_keys_names_outputs_values_filter() {
 	keysNamesOutputsFilterRegexInclude=$(echo "$keysNamesOutputsFilter" | grep '^+' | cut -d'+' -f2 | grep '^.')
 	keysNamesOutputsFilterRegexExclude=$(echo "$keysNamesOutputsFilter" | grep '^-' | cut -d'-' -f2 | grep '^.')
 
-    keysNamesOutputsValuesFiltered="$keysNamesOutputsValues"
+	keysNamesOutputsValuesFiltered="$keysNamesOutputsValues"
 
 	if [ -n "$keysNamesOutputsFilterInclude" ]; then
-		keysNamesOutputsValuesFiltered=$(_yaml_keys_names_outputs_values_filter_include "$keysNamesOutputsValues" "$keysNamesOutputsFilterInclude")
+		keysNamesOutputsValuesFiltered=$(_yaml_keys_names_outputs_values_filter_apply "$keysNamesOutputsValues" "$keysNamesOutputsFilterInclude" false)
 	fi
-    
+
 	if [ -n "$keysNamesOutputsFilterExclude" ]; then
-		keysNamesOutputsValuesFiltered=$(_yaml_keys_names_outputs_values_filter_exclude "$keysNamesOutputsValues" "$keysNamesOutputsFilterExclude")
-	fi	
+		keysNamesOutputsValuesFiltered=$(_yaml_keys_names_outputs_values_filter_apply "$keysNamesOutputsValues" "$keysNamesOutputsFilterExclude" true)
+	fi
 
-    echo "$keysNamesOutputsValuesFiltered"
+	if [ -n "$keysNamesOutputsFilterRegexInclude" ]; then
+		keysNamesOutputsValuesFiltered=$(_yaml_keys_names_outputs_values_filter_apply_regex "$keysNamesOutputsValues" "$keysNamesOutputsFilterRegexInclude" false)
+	fi
+
+	if [ -n "$keysNamesOutputsFilterRegexExclude" ]; then
+		keysNamesOutputsValuesFiltered=$(_yaml_keys_names_outputs_values_filter_apply_regex "$keysNamesOutputsValues" "$keysNamesOutputsFilterRegexExclude" true)
+	fi
+
+	echo "$keysNamesOutputsValuesFiltered"
 }
 
-_yaml_keys_names_outputs_values_filter_include() {
+_yaml_keys_names_outputs_values_filter_apply() {
 	local keysNamesOutputsValues="$1"
-	local keysNamesOutputsFilter="$2"
+	local keysNamesOutputsFilterValues="$2"
+	local keysNamesOutputsFilterExclude="$3"
 
-	echo "$keysNamesOutputsValues" | while read -r keyNameOutputValueLine; do
+	while IFS= read -r keyNameOutputValueLine; do
 		keyNameOutput="${keyNameOutputValueLine%%=*}"
-		if echo "$keysNamesOutputsFilter" | grep -Fxq -- "$keyNameOutput"; then
+
+		applyToResult="$keysNamesOutputsFilterExclude"
+		if echo "$keysNamesOutputsFilterValues" | grep -Fxq -- "$keyNameOutput"; then
+			applyToResult=$(_boolean_invert "$applyToResult")
+		fi
+
+		if [ "$applyToResult" = true ]; then
 			echo "$keyNameOutputValueLine"
 		fi
-	done
+	done < <(echo "$keysNamesOutputsValues")
 }
 
-_yaml_keys_names_outputs_values_filter_exclude() {
+_yaml_keys_names_outputs_values_filter_apply_regex() {
 	local keysNamesOutputsValues="$1"
-	local keysNamesOutputsFilter="$2"
+	local keysNamesOutputsFilterRegexValues="$2"
+	local keysNamesOutputsFilterRegexExclude="$3"
 
-	echo "$keysNamesOutputsValues" | while read -r keyNameOutputValueLine; do
+	while IFS= read -r keyNameOutputValueLine; do
 		keyNameOutput="${keyNameOutputValueLine%%=*}"
-		if ! echo "$keysNamesOutputsFilter" | grep -Fxq -- "$keyNameOutput"; then
+
+		applyToResult="$keysNamesOutputsFilterRegexExclude"
+		while IFS= read -r regex; do
+
+			if echo "$keyNameOutput" | grep -Eq "$regex"; then
+				applyToResult=$(_boolean_invert "$applyToResult")
+				break
+			fi
+
+		done < <(echo "$keysNamesOutputsFilterRegexValues")
+
+		if [ "$applyToResult" = true ]; then
 			echo "$keyNameOutputValueLine"
 		fi
-	done
-}
-
-_yaml_keys_names_outputs_values_filter_extract() {
-	local regexStartPattern="$1"
-	local keysNamesOutputsFilter="$2"
-
-	keysNamesOutputsFilterRegex=$(echo "$keysNamesOutputsFilter" | grep "^$regexStartPattern" | cut -d"$regexStartPattern" -f2)
-
+	done < <(echo "$keysNamesOutputsValues")
 }
 
 _yaml_keys_names_outputs_values_rename() {
