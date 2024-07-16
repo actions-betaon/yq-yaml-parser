@@ -1,0 +1,32 @@
+name: Continuous Integration - Test Outputs
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  test-action-filter-include:
+    name: Action Test Filter - Include    
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Test Action
+        id: action
+        uses: ./
+        with:
+          file-path: .github/tests/action-output-filter.yml
+          filtering-keys: |
+            test-action_another-value
+            test-action_specific-value            
+
+      - name: Test Output Comment Line
+        id: test-output-comment-line
+        run: |
+          outputs_list=$(echo "${{ toJson(steps.action.outputs) }}" | jq 'keys')
+          echo "Outputs: $outputs_list"

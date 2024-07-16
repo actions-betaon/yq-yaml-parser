@@ -15,3 +15,7 @@ jobs:
   test-action-outputs:
     name: Test Action Outputs
     uses: ./.github/workflows/ci-test-outputs.yml
+
+  test-action-filters:
+    name: Test Action Filters
+    uses: ./.github/workflows/ci-test-filters.yml    
