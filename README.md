@@ -49,7 +49,7 @@ jobs:
 | Input | Description| Required |
 |------ | ---------- | -------- |
 | `file-path` | Path to the YAML file to parse as output | true |
-| [`filtering-keys`](#input---filtering-keys) | The YAML key names filter to apply | false |
+| `filtering-keys` | The YAML key names filter to apply | false |
 | `renaming-outputs`| The YAML rename "keyname=output" output list | false |
 
 ## Outputs
@@ -79,7 +79,7 @@ sample_key-3_0=nested value 1
 sample_key-3_1=nested value 2
 ```
 
-## Input - Filtering keys
+## Filtering keys
 
 The input _filtering-keys_ can be used to filter the outputs using four methods:
 
