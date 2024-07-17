@@ -47,7 +47,7 @@ jobs:
 ## Inputs
 
 | Input | Description| Required |
-|------ | ---------- | -------- |
+|------- | ---------- | -------- |
 | `file-path` | Path to the YAML file to parse as output | true |
 | `filtering-keys` | The YAML key names filter to apply | false |
 | `renaming-outputs`| The YAML rename "keyname=output" output list | false |
