@@ -140,4 +140,4 @@ jobs:
               "$test_name" \
               "$expected_keys" \
               "$outputs_keys" \
-              "true"                 
+              "true"

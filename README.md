@@ -37,7 +37,7 @@ jobs:
     steps:      
       - name: Yaml to outputs
         id: yaml-to-outputs
-        uses: actions-betaon/yq-yaml-parser@v1.0.0
+        uses: actions-betaon/yq-yaml-parser@v1.2.0
         with:
           file-path: '${{ inputs.yaml-file-path }}'
           filtering-keys: '${{ inputs.yaml-filtering-keys }}'
@@ -49,7 +49,7 @@ jobs:
 | Input       | Description                     | Required |
 | ----------- | ------------------------------- | ----------- |
 | `file-path` | Path to the YAML file to parse as output | true |
-| `filtering-keys` | The YAML key names list to filter as read | false |
+| `filtering-keys` | The YAML key names/regex list to filter as read | false |
 | `renaming-outputs` | The YAML rename "keyname=output" output list | false |
 
 ## Outputs
@@ -78,3 +78,67 @@ EOF
 sample_key-3_0=nested value 1
 sample_key-3_1=nested value 2
 ```
+
+## Input - Filtering keys
+
+The input *filtering-keys* can be used to filter the outputs using four methods:
+
+* Filter by keys
+* Exclude by keys
+* Filter by keys regex
+* Exclude by keys regex
+
+### Filter by keys
+
+This method filter outputs using the exact match by key name.
+
+To filter, simply apply the keys names to be filtered.
+
+```yaml
+filtering-keys: |
+   my-key_custom
+   my-key_specific
+```
+
+### Exclude by keys
+
+This method exlude outputs using the exact match by key name.
+
+To apply the exlude filter, you must add the symbol "*!*" before the keys names.
+
+```yaml
+filtering-keys: |
+   !my-key_custom
+   !my-key_specific
+```
+
+### Filter by keys regex
+
+This method filter outputs using a regex pattern.
+
+To filter using regex, you must add the symbol "*+*" before the regex pattern.
+
+```yaml
+filtering-keys: |
+   +.*custom.*
+   +.*specific.*
+```
+
+### Exclude by keys regex
+
+This method exclude outputs using a regex pattern.
+
+To apply the exlude regex, you must add the symbol "*-*" before the regex pattern.
+
+```yaml
+filtering-keys: |
+   -.*custom.*
+   -.*specific.*
+```
+
+#### :warning
+
+This action uses alpine linux base image.
+The regex pattern is applied internally using busybox *grep*.
+
+Due this, some complex regex patterns may not work properly.
