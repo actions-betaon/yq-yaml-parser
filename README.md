@@ -21,7 +21,7 @@ on:
         required: true
         type: string
       yaml-filtering-keys:
-        description: 'Read using specific keys'
+        description: 'Read using specific filter'
         required: false
         type: string
       yaml-renaming-outputs:
@@ -46,11 +46,11 @@ jobs:
 
 ## Inputs
 
-| Input                                       | Description                                                  | Required |
-| ------------------------------------------- | ------------------------------------------------------------ | -------- |
-| `file-path`                                 | Path to the YAML file to parse as output                     | true     |
-| [`filtering-keys`](#input---filtering-keys) | The YAML key names/regular expression list to filter as read | false    |
-| `renaming-outputs`                          | The YAML rename "keyname=output" output list                 | false    |
+| Input | Description| Required |
+|------ | ---------- | -------- |
+| `file-path` | Path to the YAML file to parse as output | true |
+| [`filtering-keys`](#input---filtering-keys) | The YAML key names filter to apply | false |
+| `renaming-outputs`| The YAML rename "keyname=output" output list | false |
 
 ## Outputs
 

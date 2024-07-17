@@ -12,7 +12,7 @@ inputs:
     required: true
   filtering-keys:
     description: |
-      Read using specific keys
+      Read using specific filter
         filtering-keys: |          
           key1_nested
           key2_nested_0      
