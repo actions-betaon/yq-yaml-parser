@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   test-action:
-    name: Action Test Output - Run Action
+    name: Run Action
     runs-on: ubuntu-latest
 
     outputs:
@@ -21,7 +21,7 @@ jobs:
         id: checkout
         uses: actions/checkout@v4
 
-      - name: Test Action
+      - name: Run Action
         id: action
         uses: ./
         with:
@@ -34,7 +34,7 @@ jobs:
             test-action_to-rename=test-action_renamed
 
   test-action-output-comment-line:
-    name: Action Test Output - Comment Line
+    name: Comment Line Check
     needs: test-action
     runs-on: ubuntu-latest
 
@@ -54,7 +54,7 @@ jobs:
               "${{ needs.test-action.outputs.comment-line }}"
 
   test-action-output-rename:
-    name: Action Test Output - Rename
+    name: Rename Check
     needs: test-action
     runs-on: ubuntu-latest
 
@@ -74,7 +74,7 @@ jobs:
               "${{ needs.test-action.outputs.renamed }}"
 
   test-action-output-dont-read:
-    name: Action Test Output - Don't Read
+    name: Don't Read Check
     needs: test-action
     runs-on: ubuntu-latest
 
@@ -94,7 +94,7 @@ jobs:
               "${{ needs.test-action.outputs.noreading }}"
 
   test-action-output-multiline:
-    name: Action Test Output - Multiline
+    name: Multiline Check
     needs: test-action
     runs-on: ubuntu-latest
 

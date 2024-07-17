@@ -25,7 +25,7 @@ echo "Output Values:"
 echo "$output_result"
 echo ""
 
-if [[ "$output_result" == "$expected_result" ]] && [[ "$output_result_count" -eq "$expected_result_count" ]]; then
+if [[ "$output_result" == "$expected_result" ]] && [[ "$output_result_lines" -eq "$expected_result_lines" ]]; then
 	echo "Test Passed: $test_name"
 	echo "### :white_check_mark: Test Passed: $test_name" >>"$GITHUB_STEP_SUMMARY"
 else

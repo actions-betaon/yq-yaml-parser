@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   test-action-filter-include:
-    name: Action Test Filter - Include
+    name: Include
     runs-on: ubuntu-latest
 
     steps:
@@ -16,7 +16,7 @@ jobs:
         id: checkout
         uses: actions/checkout@v4
 
-      - name: Test Filter Include - Run
+      - name: Run Action
         id: action
         uses: ./
         with:
@@ -25,7 +25,7 @@ jobs:
             test-action_another-value
             test-action_specific-value
 
-      - name: Test Filter Include - Check
+      - name: Include Check
         id: test-filter-include-check
         run: |
           test_name="Test Filter Include"
