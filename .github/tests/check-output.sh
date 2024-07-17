@@ -5,7 +5,7 @@ expected=$2
 output=$3
 sortCompare=$4
 
-expected_result=$expected 
+expected_result=$expected
 expected_result_lines=$(echo "$expected_result" | wc -l)
 
 output_result=$output
@@ -36,11 +36,11 @@ else
 	output_result_summary=$(printf "%s" "${output_result//\\/\\\\}" | sed 's/ /·/g')
 
 	{
-		echo "Expected Lines: $expected_result_count"
+		echo "Expected Lines: $expected_result_lines"
 		echo "Expected Values:"
 		echo "$expected_result_summary"
 		echo ""
-		echo "Output Lines: $output_result_count"
+		echo "Output Lines: $output_result_lines"
 		echo "Output Values:"
 		echo "$output_result_summary"
 	} >>"$GITHUB_STEP_SUMMARY"
