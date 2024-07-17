@@ -17,24 +17,24 @@ on:
   workflow_dispatch:
     inputs:
       yaml-file-path:
-        description: "Path to the yaml file to parser"
+        description: 'Path to the yaml file to parser'
         required: true
         type: string
       yaml-filtering-keys:
-        description: "Read using specific keys"
+        description: 'Read using specific keys'
         required: false
         type: string
       yaml-renaming-outputs:
-        description: "Used to rename the default output name"
+        description: 'Used to rename the default output name'
         required: false
-        type: string        
+        type: string
 
 jobs:
   yq-yaml-parser:
     name: Yq yaml parser
     runs-on: ubuntu-latest
 
-    steps:      
+    steps:
       - name: Yaml to outputs
         id: yaml-to-outputs
         uses: actions-betaon/yq-yaml-parser@v1.2.0
@@ -46,18 +46,18 @@ jobs:
 
 ## Inputs
 
-| Input       | Description                     | Required |
-| ----------- | ------------------------------- | ----------- |
-| `file-path` | Path to the YAML file to parse as output | true |
-| `filtering-keys` | The YAML key names/regex list to filter as read | false |
-| `renaming-outputs` | The YAML rename "keyname=output" output list | false |
+| Input                                       | Description                                                  | Required |
+| ------------------------------------------- | ------------------------------------------------------------ | -------- |
+| `file-path`                                 | Path to the YAML file to parse as output                     | true     |
+| [`filtering-keys`](#input---filtering-keys) | The YAML key names/regular expression list to filter as read | false    |
+| `renaming-outputs`                          | The YAML rename "keyname=output" output list                 | false    |
 
 ## Outputs
 
 ### Given
 
 ```yaml
-sample:  
+sample:
   key-1: value 1
   key-2: |
     value 2 with
@@ -71,7 +71,7 @@ sample:
 
 ```text
 sample_key-1=value 1
-sample_key-2<<EOF 
+sample_key-2<<EOF
 value 2 with
 2 lines
 EOF
@@ -81,12 +81,12 @@ sample_key-3_1=nested value 2
 
 ## Input - Filtering keys
 
-The input *filtering-keys* can be used to filter the outputs using four methods:
+The input _filtering-keys_ can be used to filter the outputs using four methods:
 
-* Filter by keys
-* Exclude by keys
-* Filter by keys regex
-* Exclude by keys regex
+- Filter by keys
+- Exclude by keys
+- Filter by regular expression
+- Exclude by regular expression
 
 ### Filter by keys
 
@@ -96,49 +96,51 @@ To filter, simply apply the keys names to be filtered.
 
 ```yaml
 filtering-keys: |
-   my-key_custom
-   my-key_specific
+  my-key_custom
+  my-key_specific
 ```
 
 ### Exclude by keys
 
 This method exlude outputs using the exact match by key name.
 
-To apply the exlude filter, you must add the symbol "*!*" before the keys names.
+To apply the exlude filter, you must add the symbol "_!_" before the keys names.
 
 ```yaml
 filtering-keys: |
-   !my-key_custom
-   !my-key_specific
+  !my-key_custom
+  !my-key_specific
 ```
 
-### Filter by keys regex
+### Filter by regular expression
 
-This method filter outputs using a regex pattern.
+This method filter outputs using a regular expression pattern.
 
-To filter using regex, you must add the symbol "*+*" before the regex pattern.
+To filter using regular expression, you must add the symbol "_+_" before the
+regular expression pattern.
 
 ```yaml
 filtering-keys: |
-   +.*custom.*
-   +.*specific.*
+  +.*custom.*
+  +.*specific.*
 ```
 
-### Exclude by keys regex
+### Exclude by regular expression
 
-This method exclude outputs using a regex pattern.
+This method exclude outputs using a regular expression pattern.
 
-To apply the exlude regex, you must add the symbol "*-*" before the regex pattern.
+To apply the exlude regular expression, you must add the symbol "_-_" before the
+regular expression pattern.
 
 ```yaml
 filtering-keys: |
-   -.*custom.*
-   -.*specific.*
+  -.*custom.*
+  -.*specific.*
 ```
 
 #### :warning
 
-This action uses alpine linux base image.
-The regex pattern is applied internally using busybox *grep*.
+This action uses alpine linux base image. The regular expression pattern is
+applied internally using busybox _grep_.
 
-Due this, some complex regex patterns may not work properly.
+Due this, some complex regular expression patterns may not work properly.
