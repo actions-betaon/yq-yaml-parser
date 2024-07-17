@@ -1,0 +1,143 @@
+name: Continuous Integration - Test Outputs
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  test-action-filter-include:
+    name: Include
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Run Action
+        id: action
+        uses: ./
+        with:
+          file-path: .github/tests/action-output-filter.yml
+          filtering-keys: |
+            test-action_another-value
+            test-action_specific-value
+
+      - name: Include Check
+        id: test-filter-include-check
+        run: |
+          test_name="Test Filter Include"
+          expected_keys="test-action_another-value"$'\n'"test-action_specific-value"
+
+          outputs_json='${{ toJson(steps.action.outputs) }}'
+          outputs_keys=$(echo "$outputs_json" | jq -r 'keys[]')
+
+          .github/tests/check-output.sh \
+              "$test_name" \
+              "$expected_keys" \
+              "$outputs_keys" \
+              "true"
+
+  test-action-filter-exclude:
+    name: Exclude
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Run Action
+        id: action
+        uses: ./
+        with:
+          file-path: .github/tests/action-output-filter.yml
+          filtering-keys: |
+            !test-action_custom-value
+            !test-action_custom-value2
+            !test-action_another-value
+            !test-action_specific-value
+
+      - name: Exclude Check
+        id: test-filter-exclude-check
+        run: |
+          test_name="Test Filter Exclude"
+          expected_keys="test-action_another-value2"$'\n'"test-action_specific-value2"
+
+          outputs_json='${{ toJson(steps.action.outputs) }}'
+          outputs_keys=$(echo "$outputs_json" | jq -r 'keys[]')
+
+          .github/tests/check-output.sh \
+              "$test_name" \
+              "$expected_keys" \
+              "$outputs_keys" \
+              "true"
+
+  test-action-filter-include-regex:
+    name: Include Regex
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Run Action
+        id: action
+        uses: ./
+        with:
+          file-path: .github/tests/action-output-filter.yml
+          filtering-keys: |
+            +.*custom.*
+            +.*specific.*
+
+      - name: Include Regex Check
+        id: test-filter-include-regex-check
+        run: |
+          test_name="Test Filter Include Regex"
+          expected_keys="test-action_custom-value"$'\n'"test-action_custom-value2"$'\n'
+          expected_keys+="test-action_specific-value"$'\n'"test-action_specific-value2"
+
+          outputs_json='${{ toJson(steps.action.outputs) }}'
+          outputs_keys=$(echo "$outputs_json" | jq -r 'keys[]')
+
+          .github/tests/check-output.sh \
+              "$test_name" \
+              "$expected_keys" \
+              "$outputs_keys" \
+              "true"
+
+  test-action-filter-exclude-regex:
+    name: Exclude Regex
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Run Action
+        id: action
+        uses: ./
+        with:
+          file-path: .github/tests/action-output-filter.yml
+          filtering-keys: |
+            -.*value2.*
+            -.*specific.*
+
+      - name: Exclude Regex Check
+        id: test-filter-exclude-regex-check
+        run: |
+          test_name="Test Filter Exclude Regex"
+          expected_keys="test-action_custom-value"$'\n'"test-action_another-value"
+
+          outputs_json='${{ toJson(steps.action.outputs) }}'
+          outputs_keys=$(echo "$outputs_json" | jq -r 'keys[]')
+
+          .github/tests/check-output.sh \
+              "$test_name" \
+              "$expected_keys" \
+              "$outputs_keys" \
+              "true"

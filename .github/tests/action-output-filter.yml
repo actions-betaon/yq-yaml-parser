@@ -1,0 +1,8 @@
+test-action:  
+  custom-value: cvalue
+  custom-value2: cvalue2
+  another-value: avalue
+  another-value2: avalue2
+  specific-value: svalue
+  specific-value2: svalue2
+  

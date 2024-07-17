@@ -48,7 +48,7 @@ jobs:
       - name: Run the Container
         id: run
         env:
-          INPUT_YAML_FILE_PATH: ./yq-test-action.yml
+          INPUT_YAML_FILE_PATH: .github/tests/action-output.yml
         run: |
           docker run \
             --workdir /github/workspace \
