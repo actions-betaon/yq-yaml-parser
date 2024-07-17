@@ -16,7 +16,7 @@ jobs:
         id: checkout
         uses: actions/checkout@v4
 
-      - name: Test Action
+      - name: Test Filter Include - Run
         id: action
         uses: ./
         with:
@@ -25,11 +25,16 @@ jobs:
             test-action_another-value
             test-action_specific-value
 
-      - name: Test Output Comment Line
-        id: test-output-comment-line
+      - name: Test Filter Include - Check
+        id: test-filter-include-check
         run: |
+          test_name="Test Filter Include"
+          expected_keys="test-action_another-value"$'\n'"test-action_specific-value"
+
           outputs_json='${{ toJson(steps.action.outputs) }}'
-          echo "$outputs_json"
-          echo "outputs_list"
-          echo "$outputs_json" | jq -r 'keys[]'
-          echo "Outputs: $outputs_list"
+          outputs_keys=$(echo "$outputs_json" | jq -r 'keys[]')
+
+          .github/tests/check-output-filter.sh \
+              "$test_name" \
+              "$expected_keys" \
+              "$outputs_keys"
