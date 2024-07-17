@@ -187,6 +187,8 @@ _set_github_outputs() {
 
 set -e
 
+echo "Debug: $RUNNER_DEBUG"
+
 _dotReplacement="_"
 
 _set_github_outputs \
