@@ -34,7 +34,8 @@ jobs:
           outputs_json='${{ toJson(steps.action.outputs) }}'
           outputs_keys=$(echo "$outputs_json" | jq -r 'keys[]')
 
-          .github/tests/check-output-filter.sh \
+          .github/tests/check-output.sh \
               "$test_name" \
               "$expected_keys" \
-              "$outputs_keys"
+              "$outputs_keys" \
+              "true"
